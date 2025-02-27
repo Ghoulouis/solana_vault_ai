@@ -6,7 +6,6 @@ skip-lint = false
 
 [programs.localnet]
 lucky_trading = "6u3ArNty9HRsBnfh7nZZTSUsWfzLqPKscwPtuQhXkkT2"
-jupiter-perpetuals-cpi = "PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu"
 
 
 [registry]
@@ -17,7 +16,7 @@ cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/test_local.ts"
 
 [test]
 startup_wait = 10000

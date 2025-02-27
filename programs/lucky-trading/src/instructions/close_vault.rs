@@ -4,17 +4,16 @@ use anchor_spl::token::{Mint, Token};
 use crate::{constants::constants::VAULT_SEED, state::Vault};
 
 #[derive(Accounts)]
-pub struct OpenVault<'info> {
+pub struct CloseVault<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(mut)]
     pub ai: Signer<'info>,
     #[account(
-        init,
+        mut,
         seeds = [VAULT_SEED, ai.key.as_ref() ], 
         bump,
-        payer = authority,
-        space = Vault::VAULT_SPACE
+        close = authority,
     )]
     pub vault: Account<'info, Vault>,
     #[account(mut)]
@@ -24,15 +23,15 @@ pub struct OpenVault<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub(crate) fn handler(ctx: Context<OpenVault>) -> Result<()> {
-    let vault = &mut ctx.accounts.vault;
-        vault.bump = ctx.bumps.vault;
-        vault.authority = *ctx.accounts.authority.key;
-        vault.ai_key = ctx.accounts.ai.key();
-        vault.nonce = 0;
-        vault.collateral = ctx.accounts.collateral.key();
-        vault.collateral_amount = 0;
-        vault.total_lp = 0;
-        vault.is_paused = false;
+pub(crate) fn handler(ctx: Context<CloseVault>) -> Result<()> {
+    // let vault = &mut ctx.accounts.vault;
+    //     vault.bump = ctx.bumps.vault;
+    //     vault.authority = *ctx.accounts.authority.key;
+    //     vault.ai_key = ctx.accounts.ai_key.key();
+    //     vault.nonce = 0;
+    //     vault.collateral = ctx.accounts.collateral.key();
+    //     vault.collateral_amount = 0;
+    //     vault.total_lp = 0;
+    //     vault.is_paused = false;
     Ok(())
 }
