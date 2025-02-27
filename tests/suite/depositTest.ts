@@ -11,6 +11,7 @@ import { Program } from "@coral-xyz/anchor";
 import { LuckyTrading } from "../../target/types/lucky_trading";
 import { PublicKey } from "@solana/web3.js";
 import { assert, expect, use } from "chai";
+import { getBalanceLPUser, getTotalLP } from "../case/utils";
 export const depositTest = async function ({
     owner,
     agent,
@@ -66,7 +67,7 @@ export const depositTest = async function ({
                 1e6 * 10 ** collateralDecimals
             );
 
-            let [vault] = PublicKey.findProgramAddressSync(
+            [vault] = PublicKey.findProgramAddressSync(
                 [Buffer.from("vault"), agent.publicKey.toBuffer()],
                 program.programId
             );
@@ -107,6 +108,12 @@ export const depositTest = async function ({
                 })
                 .signers([user.payer, agent.payer])
                 .rpc();
+            console;
+            let balanceLP = await getBalanceLPUser(user.publicKey, vault);
+            expect(balanceLP).to.eq(BigInt(amountLp));
+
+            let totalLP = await getTotalLP(vault);
+            expect(totalLP).to.eq(BigInt(amountLp));
         });
 
         it("agent can withdraw from vault", async function () {
@@ -123,7 +130,6 @@ export const depositTest = async function ({
                 })
                 .signers([agent.payer])
                 .rpc();
-
             let balanceAfter = await getAccount(provider.connection, agentCollateralATA.address);
             expect(balanceAfter.amount - balanceBefore.amount).to.eq(BigInt(1e5 * 10 ** collateralDecimals));
         });

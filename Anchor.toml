@@ -12,7 +12,7 @@ lucky_trading = "6u3ArNty9HRsBnfh7nZZTSUsWfzLqPKscwPtuQhXkkT2"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
