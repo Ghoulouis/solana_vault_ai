@@ -1,16 +1,20 @@
-/target/** 
+
+/target/*
 !target/deploy/
-target/deploy/*.so
-!target/deploy/lucky_trading-keypair.json
 !target/idl/
-!target/idl/lucky_trading.json
 !target/types/
+
+
+target/deploy/*.so
+
+
+!target/deploy/lucky_trading-keypair.json
+!target/idl/lucky_trading.json
 !target/types/lucky_trading.ts
 
 
 .anchor
 .DS_Store
-target
 **/*.rs.bk
 node_modules
 test-ledger
