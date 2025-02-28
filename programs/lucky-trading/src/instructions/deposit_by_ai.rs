@@ -7,11 +7,11 @@ use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfe
 pub struct DepositByAI<'info> {
 
     #[account(mut)]
-    pub ai: Signer<'info>,
+    pub agent: Signer<'info>,
 
     #[account(
         mut, 
-        seeds = [VAULT_SEED, ai.key.as_ref() ], 
+        seeds = [VAULT_SEED, agent.key.as_ref() ], 
         bump
     )]
     pub vault: Account<'info, Vault>,
@@ -24,7 +24,7 @@ pub struct DepositByAI<'info> {
     #[account(
         mut,
         constraint = ai_collateral.mint == collateral.key() @VaultError::InvalidError,
-        constraint = ai_collateral.owner == ai.key() @VaultError::InvalidError,
+        constraint = ai_collateral.owner == agent.key() @VaultError::InvalidError,
     )]
     pub ai_collateral: Box<Account<'info, TokenAccount>>,
     
@@ -44,7 +44,7 @@ pub struct DepositByAI<'info> {
 
 pub(crate) fn handler(ctx: Context<DepositByAI>,  collateral_amount: u64) -> Result<()> {
    let collateral = &ctx.accounts.collateral;
-   let ai = &ctx.accounts.ai;
+   let ai = &ctx.accounts.agent;
     // transfer
     transfer_helper(ctx.accounts.ai_collateral.to_account_info(),
      ctx.accounts.vault_collateral.to_account_info(),

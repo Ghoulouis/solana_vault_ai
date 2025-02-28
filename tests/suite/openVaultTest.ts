@@ -28,28 +28,26 @@ export const openVaultTest = async function ({ owner, agent }: { owner: anchor.W
                 program.programId
             );
             await program.methods
-                .openVault()
+                .openVault(agent.publicKey)
                 .accountsPartial({
                     authority: owner.publicKey,
-                    ai: agent.publicKey,
                     collateral: collateral,
                     vault: vaultPda,
                 })
-                .signers([owner.payer, agent.payer])
+                .signers([owner.payer])
                 .rpc();
             const vault = await program.account.vault.fetch(vaultPda);
 
             expect(vault.authority).to.eql(owner.publicKey);
 
             await program.methods
-                .closeVault()
+                .closeVault(agent.publicKey)
                 .accountsPartial({
                     authority: owner.publicKey,
-                    ai: agent.publicKey,
                     collateral: collateral,
                     vault: vaultPda,
                 })
-                .signers([owner.payer, agent.payer])
+                .signers([owner.payer])
                 .rpc();
         });
     });

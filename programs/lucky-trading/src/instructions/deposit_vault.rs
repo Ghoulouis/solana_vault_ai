@@ -7,14 +7,14 @@ use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfe
 pub struct DepositVault<'info> {
 
     #[account(mut)]
-    pub ai: Signer<'info>,
+    pub agent: Signer<'info>,
 
     #[account(mut)]
     pub user: Signer<'info>,
 
     #[account(
         mut, 
-        seeds = [VAULT_SEED, ai.key.as_ref() ], 
+        seeds = [VAULT_SEED, agent.key.as_ref() ], 
         bump
     )]
     pub vault: Account<'info, Vault>,

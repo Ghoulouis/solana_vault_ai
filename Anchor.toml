@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-lucky_trading = "6u3ArNty9HRsBnfh7nZZTSUsWfzLqPKscwPtuQhXkkT2"
+lucky_trading = "ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX"
 
 
 [registry]

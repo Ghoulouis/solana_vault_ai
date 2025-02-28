@@ -1,5 +1,5 @@
 {
-  "address": "12eL43u1CewjGvPE7wZqDqQkzLUjpakP7pi5GVAPazH9",
+  "address": "ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX",
   "metadata": {
     "name": "lucky_trading",
     "version": "0.1.0",
@@ -26,11 +26,6 @@
           "signer": true
         },
         {
-          "name": "ai",
-          "writable": true,
-          "signer": true
-        },
-        {
           "name": "vault",
           "writable": true,
           "pda": {
@@ -46,8 +41,8 @@
                 ]
               },
               {
-                "kind": "account",
-                "path": "ai"
+                "kind": "arg",
+                "path": "agent"
               }
             ]
           }
@@ -65,7 +60,12 @@
           "address": "11111111111111111111111111111111"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        }
+      ]
     },
     {
       "name": "deposit",
@@ -81,7 +81,7 @@
       ],
       "accounts": [
         {
-          "name": "ai",
+          "name": "agent",
           "writable": true,
           "signer": true
         },
@@ -107,7 +107,7 @@
               },
               {
                 "kind": "account",
-                "path": "ai"
+                "path": "agent"
               }
             ]
           }
@@ -196,7 +196,7 @@
       ],
       "accounts": [
         {
-          "name": "ai",
+          "name": "agent",
           "writable": true,
           "signer": true
         },
@@ -217,7 +217,7 @@
               },
               {
                 "kind": "account",
-                "path": "ai"
+                "path": "agent"
               }
             ]
           }
@@ -277,11 +277,6 @@
           "signer": true
         },
         {
-          "name": "ai",
-          "writable": true,
-          "signer": true
-        },
-        {
           "name": "vault",
           "writable": true,
           "pda": {
@@ -297,8 +292,8 @@
                 ]
               },
               {
-                "kind": "account",
-                "path": "ai"
+                "kind": "arg",
+                "path": "agent"
               }
             ]
           }
@@ -316,7 +311,12 @@
           "address": "11111111111111111111111111111111"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        }
+      ]
     },
     {
       "name": "request_withdraw",
@@ -438,7 +438,7 @@
       ],
       "accounts": [
         {
-          "name": "ai",
+          "name": "agent",
           "writable": true,
           "signer": true
         },
@@ -459,7 +459,7 @@
               },
               {
                 "kind": "account",
-                "path": "ai"
+                "path": "agent"
               }
             ]
           }
@@ -681,7 +681,7 @@
             "type": "pubkey"
           },
           {
-            "name": "ai_key",
+            "name": "agent",
             "type": "pubkey"
           },
           {

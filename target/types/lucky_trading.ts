@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/lucky_trading.json`.
  */
 export type LuckyTrading = {
-  "address": "6u3ArNty9HRsBnfh7nZZTSUsWfzLqPKscwPtuQhXkkT2",
+  "address": "ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX",
   "metadata": {
     "name": "luckyTrading",
     "version": "0.1.0",
@@ -32,11 +32,6 @@ export type LuckyTrading = {
           "signer": true
         },
         {
-          "name": "ai",
-          "writable": true,
-          "signer": true
-        },
-        {
           "name": "vault",
           "writable": true,
           "pda": {
@@ -52,8 +47,8 @@ export type LuckyTrading = {
                 ]
               },
               {
-                "kind": "account",
-                "path": "ai"
+                "kind": "arg",
+                "path": "agent"
               }
             ]
           }
@@ -71,7 +66,12 @@ export type LuckyTrading = {
           "address": "11111111111111111111111111111111"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        }
+      ]
     },
     {
       "name": "deposit",
@@ -87,7 +87,7 @@ export type LuckyTrading = {
       ],
       "accounts": [
         {
-          "name": "ai",
+          "name": "agent",
           "writable": true,
           "signer": true
         },
@@ -113,7 +113,7 @@ export type LuckyTrading = {
               },
               {
                 "kind": "account",
-                "path": "ai"
+                "path": "agent"
               }
             ]
           }
@@ -202,7 +202,7 @@ export type LuckyTrading = {
       ],
       "accounts": [
         {
-          "name": "ai",
+          "name": "agent",
           "writable": true,
           "signer": true
         },
@@ -223,7 +223,7 @@ export type LuckyTrading = {
               },
               {
                 "kind": "account",
-                "path": "ai"
+                "path": "agent"
               }
             ]
           }
@@ -283,11 +283,6 @@ export type LuckyTrading = {
           "signer": true
         },
         {
-          "name": "ai",
-          "writable": true,
-          "signer": true
-        },
-        {
           "name": "vault",
           "writable": true,
           "pda": {
@@ -303,8 +298,8 @@ export type LuckyTrading = {
                 ]
               },
               {
-                "kind": "account",
-                "path": "ai"
+                "kind": "arg",
+                "path": "agent"
               }
             ]
           }
@@ -322,7 +317,12 @@ export type LuckyTrading = {
           "address": "11111111111111111111111111111111"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        }
+      ]
     },
     {
       "name": "requestWithdraw",
@@ -444,7 +444,7 @@ export type LuckyTrading = {
       ],
       "accounts": [
         {
-          "name": "ai",
+          "name": "agent",
           "writable": true,
           "signer": true
         },
@@ -465,7 +465,7 @@ export type LuckyTrading = {
               },
               {
                 "kind": "account",
-                "path": "ai"
+                "path": "agent"
               }
             ]
           }
@@ -687,7 +687,7 @@ export type LuckyTrading = {
             "type": "pubkey"
           },
           {
-            "name": "aiKey",
+            "name": "agent",
             "type": "pubkey"
           },
           {

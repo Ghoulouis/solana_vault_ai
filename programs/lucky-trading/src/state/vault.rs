@@ -5,7 +5,7 @@ use std::mem::size_of;
 pub struct Vault {
     pub bump: u8,
     pub authority: Pubkey,
-    pub ai_key: Pubkey,
+    pub agent: Pubkey,
     pub nonce: u64,
     pub collateral: Pubkey,
     pub collateral_amount: u64,

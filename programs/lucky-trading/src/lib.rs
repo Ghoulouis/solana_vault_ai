@@ -9,19 +9,19 @@ pub mod helper;
 pub mod instructions;
 pub mod state;
 
-declare_id!("6u3ArNty9HRsBnfh7nZZTSUsWfzLqPKscwPtuQhXkkT2");
+declare_id!("ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX");
 
 #[program]
 pub mod lucky_trading {
     use super::*;
 
     // admin functions
-    pub fn open_vault(ctx: Context<OpenVault>) -> Result<()> {
-        instructions::open_vault::handler(ctx)
+    pub fn open_vault(ctx: Context<OpenVault>, agent: Pubkey) -> Result<()> {
+        instructions::open_vault::handler(ctx, agent)
     }
 
-    pub fn close_vault(ctx: Context<CloseVault>) -> Result<()> {
-        instructions::close_vault::handler(ctx)
+    pub fn close_vault(ctx: Context<CloseVault>, agent: Pubkey) -> Result<()> {
+        instructions::close_vault::handler(ctx, agent)
     }
 
     // ai functions

@@ -4,14 +4,17 @@ use anchor_spl::token::{Mint, Token};
 use crate::{constants::constants::VAULT_SEED, state::Vault};
 
 #[derive(Accounts)]
+#[instruction(
+    agent: Pubkey,
+)]
 pub struct OpenVault<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
-    #[account(mut)]
-    pub ai: Signer<'info>,
+    // #[account(mut)]
+    // pub ai: Signer<'info>,
     #[account(
         init,
-        seeds = [VAULT_SEED, ai.key.as_ref() ], 
+        seeds = [VAULT_SEED, agent.as_ref() ], 
         bump,
         payer = authority,
         space = Vault::VAULT_SPACE
@@ -24,11 +27,11 @@ pub struct OpenVault<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub(crate) fn handler(ctx: Context<OpenVault>) -> Result<()> {
+pub(crate) fn handler(ctx: Context<OpenVault>, agent: Pubkey) -> Result<()> {
     let vault = &mut ctx.accounts.vault;
         vault.bump = ctx.bumps.vault;
         vault.authority = *ctx.accounts.authority.key;
-        vault.ai_key = ctx.accounts.ai.key();
+        vault.agent = agent; 
         vault.nonce = 0;
         vault.collateral = ctx.accounts.collateral.key();
         vault.collateral_amount = 0;

@@ -81,14 +81,13 @@ export const depositTest = async function ({
             );
 
             await program.methods
-                .openVault()
+                .openVault(agent.publicKey)
                 .accountsPartial({
                     authority: owner.publicKey,
-                    ai: agent.publicKey,
                     collateral: collateral,
                     vault: vault,
                 })
-                .signers([owner.payer, agent.payer])
+                .signers([owner.payer])
                 .rpc();
             const vaultOnChain = await program.account.vault.fetch(vault);
             expect(vaultOnChain.authority).to.eql(owner.publicKey);
@@ -99,7 +98,7 @@ export const depositTest = async function ({
             await program.methods
                 .deposit(new anchor.BN(amount), new anchor.BN(amountLp), new anchor.BN(0))
                 .accountsPartial({
-                    ai: agent.publicKey,
+                    agent: agent.publicKey,
                     user: user.publicKey,
                     vault: vault,
                     collateral: collateral,
@@ -122,7 +121,7 @@ export const depositTest = async function ({
             await program.methods
                 .withdrawByAi(amount)
                 .accountsPartial({
-                    ai: agent.publicKey,
+                    agent: agent.publicKey,
                     vault: vault,
                     collateral: collateral,
                     aiCollateral: agentCollateralATA.address,
@@ -140,7 +139,7 @@ export const depositTest = async function ({
             await program.methods
                 .depositByAi(amount)
                 .accountsPartial({
-                    ai: agent.publicKey,
+                    agent: agent.publicKey,
                     vault: vault,
                     collateral: collateral,
                     aiCollateral: agentCollateralATA.address,

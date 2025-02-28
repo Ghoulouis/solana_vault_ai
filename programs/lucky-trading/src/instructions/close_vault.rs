@@ -4,14 +4,16 @@ use anchor_spl::token::{Mint, Token};
 use crate::{constants::constants::VAULT_SEED, state::Vault};
 
 #[derive(Accounts)]
+#[instruction(
+    agent: Pubkey,
+)]
 pub struct CloseVault<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
-    #[account(mut)]
-    pub ai: Signer<'info>,
+  
     #[account(
         mut,
-        seeds = [VAULT_SEED, ai.key.as_ref() ], 
+        seeds = [VAULT_SEED, agent.as_ref() ], 
         bump,
         close = authority,
     )]
@@ -23,7 +25,7 @@ pub struct CloseVault<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub(crate) fn handler(ctx: Context<CloseVault>) -> Result<()> {
+pub(crate) fn handler(ctx: Context<CloseVault>, agent: Pubkey) -> Result<()> {
     // let vault = &mut ctx.accounts.vault;
     //     vault.bump = ctx.bumps.vault;
     //     vault.authority = *ctx.accounts.authority.key;

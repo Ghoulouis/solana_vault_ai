@@ -7,11 +7,11 @@ use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfe
 pub struct WithdrawByAI<'info> {
 
     #[account(mut)]
-    pub ai: Signer<'info>,
+    pub agent: Signer<'info>,
 
     #[account(
         mut, 
-        seeds = [VAULT_SEED, ai.key.as_ref()], 
+        seeds = [VAULT_SEED, agent.key.as_ref()], 
         bump
     )]
     pub vault: Account<'info, Vault>,
@@ -24,7 +24,7 @@ pub struct WithdrawByAI<'info> {
     #[account(
         mut,
         constraint = ai_collateral.mint == collateral.key() @VaultError::InvalidAICollateralATAAccount,
-        constraint = ai_collateral.owner == ai.key() @VaultError::InvalidAICollateralATAAccount,
+        constraint = ai_collateral.owner == agent.key() @VaultError::InvalidAICollateralATAAccount,
     )]
     pub ai_collateral: Box<Account<'info, TokenAccount>>,
      
@@ -50,7 +50,7 @@ pub(crate) fn handler(ctx: Context<WithdrawByAI>,  collateral_amount: u64) -> Re
      ctx.accounts.token_program.to_account_info(),
      ctx.accounts.token_2022_program.to_account_info(),
      collateral_amount,
-     Some(&[&[VAULT_SEED, ctx.accounts.ai.key().as_ref(), &[vault.bump] ]]),
+     Some(&[&[VAULT_SEED, ctx.accounts.agent.key().as_ref(), &[vault.bump] ]]),
     )?;
     
     Ok(())
