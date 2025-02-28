@@ -71,8 +71,11 @@ pub(crate) fn handler(ctx: Context<DepositVault>, collateral_amount: u64, lp_amo
     
 
     vault.total_lp += lp_amount;
+    vault.collateral_amount += collateral_amount;
     let vault_user = &mut ctx.accounts.vault_user;
     vault_user.lp += lp_amount;
+    
+   
 
     
     Ok(())

@@ -12,11 +12,11 @@ lucky_trading = "ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "Localnet" # Devnet, Localnet, Mainnet
 wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/test_local.ts"
-
+create_vault = "ts-node scripts/create_vault.ts"
 [test]
 startup_wait = 10000

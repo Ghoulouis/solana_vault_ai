@@ -28,6 +28,16 @@ export async function getBalanceLPUser(user: PublicKey, vault: PublicKey) {
     return balanceLp;
 }
 
+export async function getBalanceLPLockUser(user: PublicKey, vault: PublicKey) {
+    let [lp] = PublicKey.findProgramAddressSync(
+        [Buffer.from("vault"), vault.toBuffer(), user.toBuffer()],
+        program.programId
+    );
+    let lpATA = await program.account.vaultUser.fetch(lp);
+    let balanceLp = BigInt(lpATA.lpLock.toNumber());
+    return balanceLp;
+}
+
 export async function getTotalLP(vault: PublicKey) {
     let vaultData = await program.account.vault.fetch(vault);
     let totalLP = BigInt(vaultData.totalLp.toNumber());

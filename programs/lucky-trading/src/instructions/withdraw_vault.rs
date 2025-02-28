@@ -10,11 +10,11 @@ use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfe
 pub struct WithdrawVault<'info> {
 
     #[account(mut)]
-    pub ai: Signer<'info>,
+    pub agent: Signer<'info>,
 
     #[account(
         mut, 
-        seeds = [VAULT_SEED, ai.key.as_ref() ], 
+        seeds = [VAULT_SEED, agent.key.as_ref() ], 
         bump
     )]
     pub vault: Account<'info, Vault>,
@@ -53,16 +53,17 @@ pub(crate) fn handler(ctx: Context<WithdrawVault>, user: Pubkey, lp_amount: u64,
     let vault = &mut ctx.accounts.vault;
     let collateral = &ctx.accounts.collateral;
     require!(vault_user.lp_lock == lp_amount, VaultError::InvalidError);
-    vault_user.lp_lock -= lp_amount;
+    vault_user.lp_lock  = vault_user.lp_lock.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
     vault.total_lp = vault.total_lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
-    transfer_helper(ctx.accounts.vault_collateral.to_account_info(),
-    ctx.accounts.user_collateral.to_account_info(),
-    collateral,
-    vault.to_account_info(),
-    ctx.accounts.token_program.to_account_info(),
-    ctx.accounts.token_2022_program.to_account_info(),
-    collateral_amount,
-     Some(&[&[VAULT_SEED, ctx.accounts.ai.key().as_ref(), &[vault.bump] ]]),
-    )?;
+
+    // transfer_helper(ctx.accounts.vault_collateral.to_account_info(),
+    // ctx.accounts.user_collateral.to_account_info(),
+    // collateral,
+    // vault.to_account_info(),
+    // ctx.accounts.token_program.to_account_info(),
+    // ctx.accounts.token_2022_program.to_account_info(),
+    // collateral_amount,
+    //  Some(&[&[VAULT_SEED, ctx.accounts.agent.key().as_ref(), &[vault.bump] ]]),
+    // )?;
     Ok(())
 }

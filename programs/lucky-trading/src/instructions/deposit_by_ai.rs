@@ -56,6 +56,8 @@ pub(crate) fn handler(ctx: Context<DepositByAI>,  collateral_amount: u64) -> Res
      None
     )?;
     
+    let vault = &mut ctx.accounts.vault;
+    vault.collateral_amount = collateral_amount.checked_add(vault.collateral_amount).ok_or(VaultError::InvalidCollateralAmount)?;
 
 
     

@@ -16,4 +16,7 @@ pub enum VaultError {
 
     #[msg("Wrong owner when transfer")]
     InvalidOwnerTransfer,
+
+    #[msg("Wrong collateral amount")]
+    InvalidCollateralAmount,
 }

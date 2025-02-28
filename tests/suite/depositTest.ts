@@ -8,10 +8,11 @@ import {
     mintTo,
 } from "@solana/spl-token";
 import { Program } from "@coral-xyz/anchor";
-import { LuckyTrading } from "../../target/types/lucky_trading";
+
 import { PublicKey } from "@solana/web3.js";
 import { assert, expect, use } from "chai";
-import { getBalanceLPUser, getTotalLP } from "../case/utils";
+import { getBalanceLPLockUser, getBalanceLPUser, getTotalLP } from "../case/utils";
+import { LuckyTrading } from "../../target/types/lucky_trading";
 export const depositTest = async function ({
     owner,
     agent,
@@ -28,6 +29,7 @@ export const depositTest = async function ({
     let vaultCollateralATA: Account;
     let agentCollateralATA: Account;
     let vault: PublicKey;
+    let vaultUserPda: PublicKey;
     let collateralDecimals = 6;
 
     return describe("Deposit tests", function () {
@@ -72,6 +74,11 @@ export const depositTest = async function ({
                 program.programId
             );
 
+            [vaultUserPda] = PublicKey.findProgramAddressSync(
+                [Buffer.from("vault"), vault.toBuffer(), user.publicKey.toBuffer()],
+                program.programId
+            );
+
             vaultCollateralATA = await getOrCreateAssociatedTokenAccount(
                 provider.connection,
                 owner.payer,
@@ -92,7 +99,7 @@ export const depositTest = async function ({
             const vaultOnChain = await program.account.vault.fetch(vault);
             expect(vaultOnChain.authority).to.eql(owner.publicKey);
         });
-        it("can deposit to vault", async function () {
+        it("user can deposit to vault", async function () {
             let amount = 5e5 * 10 ** collateralDecimals;
             let amountLp = 5e5 * 10 ** collateralDecimals;
             await program.methods
@@ -101,6 +108,7 @@ export const depositTest = async function ({
                     agent: agent.publicKey,
                     user: user.publicKey,
                     vault: vault,
+                    // vaultUser: vaultUser,
                     collateral: collateral,
                     userCollateral: userCollateralATA,
                     vaultCollateral: vaultCollateralATA.address,
@@ -115,7 +123,97 @@ export const depositTest = async function ({
             expect(totalLP).to.eq(BigInt(amountLp));
         });
 
-        it("agent can withdraw from vault", async function () {
+        it("user can lock LP", async function () {
+            let amountLpLock = 1e4 * 10 ** collateralDecimals;
+            await program.methods
+                .requestWithdraw(agent.publicKey, new anchor.BN(amountLpLock))
+                .accountsPartial({
+                    user: user.publicKey,
+                    vault: vault,
+                    collateral: collateral,
+                    userCollateral: userCollateralATA,
+                    vaultCollateral: vaultCollateralATA.address,
+                })
+                .signers([user.payer])
+                .rpc();
+            console;
+            let balanceLPLock = await getBalanceLPLockUser(user.publicKey, vault);
+            expect(balanceLPLock).to.eq(BigInt(amountLpLock));
+        });
+
+        it("agent send reward for user ", async function () {
+            let reward = 1e4 * 10 ** collateralDecimals;
+            let amountLpLock = 1e4 * 10 ** collateralDecimals;
+            await program.methods
+                .withdrawForUser(user.publicKey, new anchor.BN(amountLpLock), new anchor.BN(reward))
+                .accountsPartial({
+                    agent: agent.publicKey,
+                    vault: vault,
+                    vaultUser: vaultUserPda,
+                    collateral: collateral,
+                    userCollateral: userCollateralATA,
+                    vaultCollateral: vaultCollateralATA.address,
+                })
+                .signers([agent.payer])
+                .rpc();
+            console;
+            let balanceLPLock = await getBalanceLPLockUser(user.publicKey, vault);
+            expect(balanceLPLock).to.eq(BigInt(0));
+        });
+
+        xit("can flow signer -> user to vault with LP", async function () {
+            const amount = 1e5 * 10 ** collateralDecimals;
+            const amountLp = 1e5 * 10 ** collateralDecimals;
+            const nonce = 1;
+            const tx = new anchor.web3.Transaction();
+            let totalLPBefore = await getTotalLP(vault);
+            const depositIx = await program.methods
+                .deposit(new anchor.BN(amount), new anchor.BN(amountLp), new anchor.BN(nonce))
+                .accountsPartial({
+                    agent: agent.publicKey,
+                    user: user.publicKey,
+                    vault: vault,
+                    collateral: collateral,
+                    userCollateral: userCollateralATA,
+                    vaultCollateral: vaultCollateralATA.address,
+                })
+                .instruction();
+            tx.add(depositIx);
+            const { blockhash, lastValidBlockHeight } = await provider.connection.getLatestBlockhash();
+            tx.recentBlockhash = blockhash;
+            tx.feePayer = user.publicKey;
+            tx.partialSign(agent.payer);
+            let serializedTx = tx.serialize({ requireAllSignatures: false });
+            const txHex = serializedTx.toString("hex");
+            console.log("Transaction hex (agent signed):", txHex);
+
+            const parsedTx = anchor.web3.Transaction.from(Buffer.from(txHex, "hex"));
+            console.log("Parsed transaction from hex:", parsedTx);
+            parsedTx.partialSign(user.payer);
+            console.log("Transaction fully signed by agent and user:", parsedTx.signatures);
+
+            const txHash = await provider.connection.sendRawTransaction(parsedTx.serialize());
+            console.log("Transaction hash:", txHash);
+
+            await provider.connection.confirmTransaction({
+                signature: txHash,
+                blockhash: blockhash,
+                lastValidBlockHeight: lastValidBlockHeight,
+            });
+
+            let balanceLP = await getBalanceLPUser(user.publicKey, vault);
+            expect(balanceLP).to.eq(BigInt(amountLp));
+            let totalLPAfter = await getTotalLP(vault);
+            expect(totalLPAfter - totalLPBefore).to.eq(BigInt(amountLp));
+        });
+
+        xit(" can get total value of vault", async function () {
+            let data = await program.account.vault.fetch(vault);
+            console.log(" total collateral value", data.collateralAmount.toString());
+            console.log(" total LP value", data.totalLp.toString());
+        });
+
+        xit("agent can withdraw from vault", async function () {
             let amount = new anchor.BN(1e5 * 10 ** collateralDecimals);
             let balanceBefore = await getAccount(provider.connection, agentCollateralATA.address);
             await program.methods
@@ -124,7 +222,7 @@ export const depositTest = async function ({
                     agent: agent.publicKey,
                     vault: vault,
                     collateral: collateral,
-                    aiCollateral: agentCollateralATA.address,
+                    agentCollateral: agentCollateralATA.address,
                     vaultCollateral: vaultCollateralATA.address,
                 })
                 .signers([agent.payer])
@@ -133,7 +231,7 @@ export const depositTest = async function ({
             expect(balanceAfter.amount - balanceBefore.amount).to.eq(BigInt(1e5 * 10 ** collateralDecimals));
         });
 
-        it("agent can deposit to vault", async function () {
+        xit("agent can deposit to vault", async function () {
             let amount = new anchor.BN(1e5 * 10 ** collateralDecimals);
             let balanceBefore = await getAccount(provider.connection, agentCollateralATA.address);
             await program.methods

@@ -5,7 +5,7 @@ use crate::{constants::constants::VAULT_SEED, error::VaultError, state::{ Vault,
 
 #[derive(Accounts)]
 #[instruction(
-    ai_key:Pubkey,
+    agent:Pubkey,
 )]
 pub struct RequestWithdrawVault<'info> {
 
@@ -14,7 +14,7 @@ pub struct RequestWithdrawVault<'info> {
 
     #[account(
         mut, 
-        seeds = [VAULT_SEED, ai_key.as_ref() ], 
+        seeds = [VAULT_SEED, agent.as_ref() ], 
         bump
     )]
     pub vault: Account<'info, Vault>,
@@ -50,7 +50,7 @@ pub struct RequestWithdrawVault<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub(crate) fn handler(ctx: Context<RequestWithdrawVault>, ai_key: Pubkey, lp_amount: u64) -> Result<()> {
+pub(crate) fn handler(ctx: Context<RequestWithdrawVault>, agent: Pubkey, lp_amount: u64) -> Result<()> {
     let vault_user = &mut ctx.accounts.vault_user;
     vault_user.lp = vault_user.lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
     vault_user.lp_lock += lp_amount;

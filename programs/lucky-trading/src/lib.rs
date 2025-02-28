@@ -55,9 +55,9 @@ pub mod lucky_trading {
 
     pub fn request_withdraw(
         ctx: Context<RequestWithdrawVault>,
-        ai_key: Pubkey,
+        agent: Pubkey,
         lp_amount: u64,
     ) -> Result<()> {
-        instructions::request_withdraw_vault::handler(ctx, ai_key, lp_amount)
+        instructions::request_withdraw_vault::handler(ctx, agent, lp_amount)
     }
 }

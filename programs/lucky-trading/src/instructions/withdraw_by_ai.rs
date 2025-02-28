@@ -23,10 +23,10 @@ pub struct WithdrawByAI<'info> {
    
     #[account(
         mut,
-        constraint = ai_collateral.mint == collateral.key() @VaultError::InvalidAICollateralATAAccount,
-        constraint = ai_collateral.owner == agent.key() @VaultError::InvalidAICollateralATAAccount,
+        constraint = agent_collateral.mint == collateral.key() @VaultError::InvalidAICollateralATAAccount,
+        constraint = agent_collateral.owner == agent.key() @VaultError::InvalidAICollateralATAAccount,
     )]
-    pub ai_collateral: Box<Account<'info, TokenAccount>>,
+    pub agent_collateral: Box<Account<'info, TokenAccount>>,
      
     #[account(
         mut,
@@ -44,7 +44,7 @@ pub(crate) fn handler(ctx: Context<WithdrawByAI>,  collateral_amount: u64) -> Re
    let collateral = &mut ctx.accounts.collateral;
     let vault = &mut ctx.accounts.vault;
     transfer_helper(ctx.accounts.vault_collateral.to_account_info(),
-     ctx.accounts.ai_collateral.to_account_info(),
+     ctx.accounts.agent_collateral.to_account_info(),
      collateral,
      vault.to_account_info(),
      ctx.accounts.token_program.to_account_info(),
@@ -52,6 +52,10 @@ pub(crate) fn handler(ctx: Context<WithdrawByAI>,  collateral_amount: u64) -> Re
      collateral_amount,
      Some(&[&[VAULT_SEED, ctx.accounts.agent.key().as_ref(), &[vault.bump] ]]),
     )?;
+
+    let vault = &mut ctx.accounts.vault;
+    vault.collateral_amount = vault.collateral_amount.checked_sub(collateral_amount).ok_or(VaultError::InvalidCollateralAmount)?;
+
     
     Ok(())
 }

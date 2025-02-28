@@ -359,7 +359,7 @@ export type LuckyTrading = {
               },
               {
                 "kind": "arg",
-                "path": "aiKey"
+                "path": "agent"
               }
             ]
           }
@@ -421,7 +421,7 @@ export type LuckyTrading = {
       ],
       "args": [
         {
-          "name": "aiKey",
+          "name": "agent",
           "type": "pubkey"
         },
         {
@@ -475,7 +475,7 @@ export type LuckyTrading = {
           "writable": true
         },
         {
-          "name": "aiCollateral",
+          "name": "agentCollateral",
           "writable": true
         },
         {
@@ -520,7 +520,7 @@ export type LuckyTrading = {
       ],
       "accounts": [
         {
-          "name": "ai",
+          "name": "agent",
           "writable": true,
           "signer": true
         },
@@ -541,7 +541,7 @@ export type LuckyTrading = {
               },
               {
                 "kind": "account",
-                "path": "ai"
+                "path": "agent"
               }
             ]
           }
@@ -670,6 +670,11 @@ export type LuckyTrading = {
       "code": 6004,
       "name": "invalidOwnerTransfer",
       "msg": "Wrong owner when transfer"
+    },
+    {
+      "code": 6005,
+      "name": "invalidCollateralAmount",
+      "msg": "Wrong collateral amount"
     }
   ],
   "types": [

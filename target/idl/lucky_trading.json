@@ -353,7 +353,7 @@
               },
               {
                 "kind": "arg",
-                "path": "ai_key"
+                "path": "agent"
               }
             ]
           }
@@ -415,7 +415,7 @@
       ],
       "args": [
         {
-          "name": "ai_key",
+          "name": "agent",
           "type": "pubkey"
         },
         {
@@ -469,7 +469,7 @@
           "writable": true
         },
         {
-          "name": "ai_collateral",
+          "name": "agent_collateral",
           "writable": true
         },
         {
@@ -514,7 +514,7 @@
       ],
       "accounts": [
         {
-          "name": "ai",
+          "name": "agent",
           "writable": true,
           "signer": true
         },
@@ -535,7 +535,7 @@
               },
               {
                 "kind": "account",
-                "path": "ai"
+                "path": "agent"
               }
             ]
           }
@@ -664,6 +664,11 @@
       "code": 6004,
       "name": "InvalidOwnerTransfer",
       "msg": "Wrong owner when transfer"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidCollateralAmount",
+      "msg": "Wrong collateral amount"
     }
   ],
   "types": [
