@@ -1,30 +1,25 @@
-use anchor_lang::{prelude::*};
+use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}, token_2022::Token2022};
 
-use crate::{constants::constants::VAULT_SEED, error::VaultError, state::{ Vault, VaultUser}};
+use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::{ Vault, VaultUser}};
 
 #[derive(Accounts)]
 #[instruction(
-    agent:Pubkey,
+    user: Pubkey,
 )]
-pub struct RequestWithdrawVault<'info> {
-
+pub struct WithdrawForUser<'info> {
     #[account(mut)]
-    pub user: Signer<'info>,
-
+    pub agent: Signer<'info>,
     #[account(
         mut, 
-        seeds = [VAULT_SEED, agent.as_ref() ], 
+        seeds = [VAULT_SEED, agent.key.as_ref() ], 
         bump
     )]
     pub vault: Account<'info, Vault>,
-
     #[account(
-        init_if_needed,
+        mut,
         seeds = [VAULT_SEED, vault.key().as_ref(), user.key().as_ref()],
-        bump,
-        payer = user,
-        space = VaultUser::VAULT_USER_SPACE
+        bump
     )]
     pub vault_user: Box<Account<'info, VaultUser>>,
     #[account(
@@ -50,9 +45,27 @@ pub struct RequestWithdrawVault<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub(crate) fn handler(ctx: Context<RequestWithdrawVault>, agent: Pubkey, lp_amount: u64) -> Result<()> {
-    let vault_user = &mut ctx.accounts.vault_user;
-    vault_user.lp = vault_user.lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
-    vault_user.lp_lock += lp_amount;
+impl <'info> WithdrawForUser<'info> {
+    pub fn handler(&mut self, _user: Pubkey, lp_amount: u64, collateral_amount: u64) -> Result<()> {
+    let vault_user = &mut self.vault_user;
+    let vault = &mut self.vault;
+    let collateral = &mut self.collateral;
+
+
+    require!(vault_user.lp_lock == lp_amount, VaultError::InvalidError);
+    vault_user.lp_lock  = vault_user.lp_lock.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
+    vault.total_lp = vault.total_lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
+    
+    transfer_helper(self.vault_collateral.to_account_info(),
+    self.user_collateral.to_account_info(),
+    collateral,
+    vault.to_account_info(),
+    self.token_program.to_account_info(),
+    self.token_2022_program.to_account_info(),
+    collateral_amount,
+     Some(&[&[VAULT_SEED, self.agent.key().as_ref(), &[vault.bump] ]]),
+    )?;
     Ok(())
+}
+
 }

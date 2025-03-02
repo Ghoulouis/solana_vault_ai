@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}, token_2022::Token2022};
-
 use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::{ Vault}};
 
 #[derive(Accounts)]
@@ -40,22 +39,24 @@ pub struct WithdrawByAI<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub(crate) fn handler(ctx: Context<WithdrawByAI>,  collateral_amount: u64) -> Result<()> {
-   let collateral = &mut ctx.accounts.collateral;
-    let vault = &mut ctx.accounts.vault;
-    transfer_helper(ctx.accounts.vault_collateral.to_account_info(),
-     ctx.accounts.agent_collateral.to_account_info(),
+impl  <'info> WithdrawByAI<'info> {
+    pub(crate) fn handler(&mut self,  collateral_amount: u64) -> Result<()> {
+   let collateral = &mut self.collateral;
+    let vault = &mut self.vault;
+    transfer_helper(self.vault_collateral.to_account_info(),
+     self.agent_collateral.to_account_info(),
      collateral,
      vault.to_account_info(),
-     ctx.accounts.token_program.to_account_info(),
-     ctx.accounts.token_2022_program.to_account_info(),
+     self.token_program.to_account_info(),
+     self.token_2022_program.to_account_info(),
      collateral_amount,
-     Some(&[&[VAULT_SEED, ctx.accounts.agent.key().as_ref(), &[vault.bump] ]]),
+     Some(&[&[VAULT_SEED, self.agent.key().as_ref(), &[vault.bump] ]]),
     )?;
-
-    let vault = &mut ctx.accounts.vault;
+    let vault = &mut self.vault;
     vault.collateral_amount = vault.collateral_amount.checked_sub(collateral_amount).ok_or(VaultError::InvalidCollateralAmount)?;
 
     
     Ok(())
+}
+
 }

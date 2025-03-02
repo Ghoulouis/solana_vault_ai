@@ -24,16 +24,8 @@ pub struct CloseVault<'info> {
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
-
-pub(crate) fn handler(ctx: Context<CloseVault>, agent: Pubkey) -> Result<()> {
-    // let vault = &mut ctx.accounts.vault;
-    //     vault.bump = ctx.bumps.vault;
-    //     vault.authority = *ctx.accounts.authority.key;
-    //     vault.ai_key = ctx.accounts.ai_key.key();
-    //     vault.nonce = 0;
-    //     vault.collateral = ctx.accounts.collateral.key();
-    //     vault.collateral_amount = 0;
-    //     vault.total_lp = 0;
-    //     vault.is_paused = false;
-    Ok(())
+impl<'info> CloseVault<'info> {
+    pub fn handler(&mut self, _agent: Pubkey) -> Result<()> {
+        Ok(())
+    }
 }

@@ -10,11 +10,9 @@ use crate::{constants::constants::VAULT_SEED, state::Vault};
 pub struct OpenVault<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
-    // #[account(mut)]
-    // pub ai: Signer<'info>,
     #[account(
         init,
-        seeds = [VAULT_SEED, agent.as_ref() ], 
+        seeds = [VAULT_SEED, agent.as_ref()], 
         bump,
         payer = authority,
         space = Vault::VAULT_SPACE
@@ -22,20 +20,21 @@ pub struct OpenVault<'info> {
     pub vault: Account<'info, Vault>,
     #[account(mut)]
     pub collateral: Account<'info, Mint>,
-    
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
 
-pub(crate) fn handler(ctx: Context<OpenVault>, agent: Pubkey) -> Result<()> {
-    let vault = &mut ctx.accounts.vault;
-        vault.bump = ctx.bumps.vault;
-        vault.authority = *ctx.accounts.authority.key;
+impl<'info> OpenVault<'info> {
+    pub fn handler(&mut self, agent: Pubkey, vault_config_bump: u8) -> Result<()> {
+    let vault = &mut self.vault;
+        vault.bump = vault_config_bump;
+        vault.authority = self.authority.key();
         vault.agent = agent; 
         vault.nonce = 0;
-        vault.collateral = ctx.accounts.collateral.key();
+        vault.collateral = self.collateral.key();
         vault.collateral_amount = 0;
         vault.total_lp = 0;
         vault.is_paused = false;
-    Ok(())
+        Ok(())
+    }   
 }

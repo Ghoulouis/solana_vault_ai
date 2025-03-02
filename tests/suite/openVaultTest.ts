@@ -5,11 +5,11 @@ import { Program } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { assert, expect } from "chai";
 import { LuckyTrading } from "../../target/types/lucky_trading";
+
 export const openVaultTest = async function ({ owner, agent }: { owner: anchor.Wallet; agent: anchor.Wallet }) {
     const program = anchor.workspace.LuckyTrading as Program<LuckyTrading>;
     const provider = anchor.AnchorProvider.env();
     let collateral: PublicKey;
-
     return describe("open vault tests", function () {
         before("Initialize collateral", async function () {
             collateral = await createMint(

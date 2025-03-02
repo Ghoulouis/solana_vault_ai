@@ -4,13 +4,13 @@ use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAc
 use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::{ Vault, VaultUser}};
 
 #[derive(Accounts)]
-#[instruction(
-    user: Pubkey,
-)]
-pub struct WithdrawVault<'info> {
+pub struct Deposit<'info> {
 
     #[account(mut)]
     pub agent: Signer<'info>,
+
+    #[account(mut)]
+    pub user: Signer<'info>,
 
     #[account(
         mut, 
@@ -20,9 +20,11 @@ pub struct WithdrawVault<'info> {
     pub vault: Account<'info, Vault>,
 
     #[account(
-        mut,
+        init_if_needed,
         seeds = [VAULT_SEED, vault.key().as_ref(), user.key().as_ref()],
-        bump
+        bump,
+        payer = user,
+        space = VaultUser::VAULT_USER_SPACE
     )]
     pub vault_user: Box<Account<'info, VaultUser>>,
     #[account(
@@ -48,22 +50,28 @@ pub struct WithdrawVault<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub(crate) fn handler(ctx: Context<WithdrawVault>, user: Pubkey, lp_amount: u64, collateral_amount: u64) -> Result<()> {
-    let vault_user = &mut ctx.accounts.vault_user;
-    let vault = &mut ctx.accounts.vault;
-    let collateral = &ctx.accounts.collateral;
-    require!(vault_user.lp_lock == lp_amount, VaultError::InvalidError);
-    vault_user.lp_lock  = vault_user.lp_lock.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
-    vault.total_lp = vault.total_lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
+impl <'info> Deposit<'info> {
+        pub fn handler(&mut self, collateral_amount: u64, lp_amount: u64, nonce : u64) -> Result<()> {
+        let collateral =&mut self.collateral;
+        let user =&mut self.user;
+        let vault =&mut self.vault; 
+        let vault_user =&mut self.vault_user;
 
-    // transfer_helper(ctx.accounts.vault_collateral.to_account_info(),
-    // ctx.accounts.user_collateral.to_account_info(),
-    // collateral,
-    // vault.to_account_info(),
-    // ctx.accounts.token_program.to_account_info(),
-    // ctx.accounts.token_2022_program.to_account_info(),
-    // collateral_amount,
-    //  Some(&[&[VAULT_SEED, ctx.accounts.agent.key().as_ref(), &[vault.bump] ]]),
-    // )?;
-    Ok(())
+        require!(vault.nonce == nonce, VaultError::InvalidError);
+        vault.nonce += 1;
+
+        transfer_helper(self.user_collateral.to_account_info(), self.vault_collateral.to_account_info(),
+        collateral,
+        user.to_account_info(),
+        self.token_program.to_account_info(),
+        self.token_2022_program.to_account_info(),
+        collateral_amount,
+        None
+        )?;
+        vault.total_lp += lp_amount;
+        vault.collateral_amount += collateral_amount;
+        vault_user.lp += lp_amount;
+        Ok(())
+    }
+
 }
