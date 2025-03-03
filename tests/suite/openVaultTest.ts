@@ -30,7 +30,7 @@ export const openVaultTest = async function ({ owner, agent }: { owner: anchor.W
             );
             await program.methods
                 .openVault(agent.publicKey)
-                .accountsPartial({
+                .accounts({
                     authority: owner.publicKey,
                     collateral: collateral,
                     vault: vaultPda,
@@ -43,7 +43,7 @@ export const openVaultTest = async function ({ owner, agent }: { owner: anchor.W
 
             await program.methods
                 .closeVault(agent.publicKey)
-                .accountsPartial({
+                .accounts({
                     authority: owner.publicKey,
                     collateral: collateral,
                     vault: vaultPda,

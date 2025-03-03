@@ -6,6 +6,7 @@ import {
     getAccount,
     getOrCreateAssociatedTokenAccount,
     mintTo,
+    TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
 import { Program } from "@coral-xyz/anchor";
 
@@ -89,7 +90,7 @@ export const depositTest = async function ({
 
             await program.methods
                 .openVault(agent.publicKey)
-                .accountsPartial({
+                .accounts({
                     authority: owner.publicKey,
                     collateral: collateral,
                     vault: vault,
@@ -104,14 +105,15 @@ export const depositTest = async function ({
             let amountLp = 5e5 * 10 ** collateralDecimals;
             await program.methods
                 .deposit(new anchor.BN(amount), new anchor.BN(amountLp), new anchor.BN(0))
-                .accountsPartial({
+                .accounts({
                     agent: agent.publicKey,
                     user: user.publicKey,
                     vault: vault,
-                    // vaultUser: vaultUser,
+                    vaultUser: vaultUserPda,
                     collateral: collateral,
                     userCollateral: userCollateralATA,
                     vaultCollateral: vaultCollateralATA.address,
+                    token2022Program: TOKEN_2022_PROGRAM_ID,
                 })
                 .signers([user.payer, agent.payer])
                 .rpc();
@@ -127,12 +129,14 @@ export const depositTest = async function ({
             let amountLpLock = 1e4 * 10 ** collateralDecimals;
             await program.methods
                 .requestWithdraw(agent.publicKey, new anchor.BN(amountLpLock))
-                .accountsPartial({
+                .accounts({
                     user: user.publicKey,
                     vault: vault,
                     collateral: collateral,
+                    vaultUser: vaultUserPda,
                     userCollateral: userCollateralATA,
                     vaultCollateral: vaultCollateralATA.address,
+                    token2022Program: TOKEN_2022_PROGRAM_ID,
                 })
                 .signers([user.payer])
                 .rpc();
@@ -146,13 +150,14 @@ export const depositTest = async function ({
             let amountLpLock = 1e4 * 10 ** collateralDecimals;
             await program.methods
                 .withdrawForUser(user.publicKey, new anchor.BN(amountLpLock), new anchor.BN(reward))
-                .accountsPartial({
+                .accounts({
                     agent: agent.publicKey,
                     vault: vault,
                     vaultUser: vaultUserPda,
                     collateral: collateral,
                     userCollateral: userCollateralATA,
                     vaultCollateral: vaultCollateralATA.address,
+                    token2022Program: TOKEN_2022_PROGRAM_ID,
                 })
                 .signers([agent.payer])
                 .rpc();
@@ -169,13 +174,15 @@ export const depositTest = async function ({
             let totalLPBefore = await getTotalLP(vault);
             const depositIx = await program.methods
                 .deposit(new anchor.BN(amount), new anchor.BN(amountLp), new anchor.BN(nonce))
-                .accountsPartial({
+                .accounts({
                     agent: agent.publicKey,
                     user: user.publicKey,
                     vault: vault,
+                    vaultUser: vaultUserPda,
                     collateral: collateral,
                     userCollateral: userCollateralATA,
                     vaultCollateral: vaultCollateralATA.address,
+                    token2022Program: TOKEN_2022_PROGRAM_ID,
                 })
                 .instruction();
             tx.add(depositIx);
@@ -218,12 +225,13 @@ export const depositTest = async function ({
             let balanceBefore = await getAccount(provider.connection, agentCollateralATA.address);
             await program.methods
                 .withdrawByAi(amount)
-                .accountsPartial({
+                .accounts({
                     agent: agent.publicKey,
                     vault: vault,
                     collateral: collateral,
                     agentCollateral: agentCollateralATA.address,
                     vaultCollateral: vaultCollateralATA.address,
+                    token2022Program: TOKEN_2022_PROGRAM_ID,
                 })
                 .signers([agent.payer])
                 .rpc();
@@ -236,12 +244,13 @@ export const depositTest = async function ({
             let balanceBefore = await getAccount(provider.connection, agentCollateralATA.address);
             await program.methods
                 .depositByAi(amount)
-                .accountsPartial({
+                .accounts({
                     agent: agent.publicKey,
                     vault: vault,
                     collateral: collateral,
                     aiCollateral: agentCollateralATA.address,
                     vaultCollateral: vaultCollateralATA.address,
+                    token2022Program: TOKEN_2022_PROGRAM_ID,
                 })
                 .signers([agent.payer])
                 .rpc();
