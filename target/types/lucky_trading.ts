@@ -461,28 +461,38 @@ export type LuckyTrading = {
     },
     {
       "code": 6001,
+      "name": "InvalidAuthority",
+      "msg": "Wrong authority"
+    },
+    {
+      "code": 6002,
       "name": "InvalidCollateralAccount",
       "msg": "Wrong collateral account"
     },
     {
-      "code": 6002,
+      "code": 6003,
       "name": "InvalidAICollateralATAAccount",
       "msg": "Wrong AI collateral ATA account"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "InvalidVaultCollateralATAAccount",
       "msg": "Wrong vault collateral ATA account"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "InvalidOwnerTransfer",
       "msg": "Wrong owner when transfer"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "InvalidCollateralAmount",
       "msg": "Wrong collateral amount"
+    },
+    {
+      "code": 6007,
+      "name": "VaultNotEmpty",
+      "msg": "Vault is not empty"
     }
   ]
 };
@@ -950,28 +960,38 @@ export const IDL: LuckyTrading = {
     },
     {
       "code": 6001,
+      "name": "InvalidAuthority",
+      "msg": "Wrong authority"
+    },
+    {
+      "code": 6002,
       "name": "InvalidCollateralAccount",
       "msg": "Wrong collateral account"
     },
     {
-      "code": 6002,
+      "code": 6003,
       "name": "InvalidAICollateralATAAccount",
       "msg": "Wrong AI collateral ATA account"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "InvalidVaultCollateralATAAccount",
       "msg": "Wrong vault collateral ATA account"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "InvalidOwnerTransfer",
       "msg": "Wrong owner when transfer"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "InvalidCollateralAmount",
       "msg": "Wrong collateral amount"
+    },
+    {
+      "code": 6007,
+      "name": "VaultNotEmpty",
+      "msg": "Vault is not empty"
     }
   ]
 };

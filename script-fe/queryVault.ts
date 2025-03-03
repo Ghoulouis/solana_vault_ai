@@ -19,7 +19,11 @@ async function main() {
     )[0];
     try {
         const vaultAccount = await program.account.vault.fetch(vaultPda);
-        console.log("Vault Account:", vaultAccount);
+        console.log("Vault Account: ", vaultPda.toBase58());
+        console.log("      authority: ", vaultAccount.authority.toBase58());
+        console.log("      agent: ", vaultAccount.agent.toBase58());
+        console.log("      total collateral: ", vaultAccount.collateralAmount.toString());
+        console.log("      total LP: ", vaultAccount.totalLp.toString());
     } catch (err) {
         console.error("Không thể lấy dữ liệu vault:", err);
     }

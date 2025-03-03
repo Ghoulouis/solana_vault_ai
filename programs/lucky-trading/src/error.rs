@@ -5,6 +5,9 @@ pub enum VaultError {
     #[msg("ERROR")]
     InvalidError,
 
+    #[msg("Wrong authority")]
+    InvalidAuthority,
+
     #[msg("Wrong collateral account")]
     InvalidCollateralAccount,
 
@@ -19,4 +22,7 @@ pub enum VaultError {
 
     #[msg("Wrong collateral amount")]
     InvalidCollateralAmount,
+
+    #[msg("Vault is not empty")]
+    VaultNotEmpty,
 }
