@@ -484,5 +484,8 @@
       "name": "InvalidCollateralAmount",
       "msg": "Wrong collateral amount"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX"
+  }
 }

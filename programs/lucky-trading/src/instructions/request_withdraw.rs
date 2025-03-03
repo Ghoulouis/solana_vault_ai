@@ -1,20 +1,20 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}, token_2022::Token2022};
 
-use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::{vault, Vault, VaultUser}};
+use crate::{constants::constants::VAULT_SEED, error::VaultError, state::{ Vault, VaultUser}};
 
 #[derive(Accounts)]
-pub struct DepositVault<'info> {
-
-    #[account(mut)]
-    pub agent: Signer<'info>,
+#[instruction(
+    agent:Pubkey,
+)]
+pub struct RequestWithdraw<'info> {
 
     #[account(mut)]
     pub user: Signer<'info>,
 
     #[account(
         mut, 
-        seeds = [VAULT_SEED, agent.key.as_ref() ], 
+        seeds = [VAULT_SEED, agent.as_ref() ], 
         bump
     )]
     pub vault: Account<'info, Vault>,
@@ -49,34 +49,12 @@ pub struct DepositVault<'info> {
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
 }
-
-pub(crate) fn handler(ctx: Context<DepositVault>, collateral_amount: u64, lp_amount: u64, nonce : u64) -> Result<()> {
-   let collateral = &ctx.accounts.collateral;
-    let user = &ctx.accounts.user;
-    let vault = &mut ctx.accounts.vault; 
-
-    require!(vault.nonce == nonce, VaultError::InvalidError);
-    vault.nonce += 1;
-
-    // transfer
-    transfer_helper(ctx.accounts.user_collateral.to_account_info(),
-     ctx.accounts.vault_collateral.to_account_info(),
-     collateral,
-     user.to_account_info(),
-     ctx.accounts.token_program.to_account_info(),
-     ctx.accounts.token_2022_program.to_account_info(),
-     collateral_amount,
-     None
-    )?;
+impl  <'info> RequestWithdraw<'info> {
+    pub fn handler(&mut self, _agent: Pubkey, lp_amount: u64) -> Result<()> {
+        let vault_user = &mut self.vault_user;
+        vault_user.lp = vault_user.lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
+        vault_user.lp_lock += lp_amount;
+        Ok(())
+    }
     
-
-    vault.total_lp += lp_amount;
-    vault.collateral_amount += collateral_amount;
-    let vault_user = &mut ctx.accounts.vault_user;
-    vault_user.lp += lp_amount;
-    
-   
-
-    
-    Ok(())
 }

@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}, token_2022::Token2022};
 
-use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::{vault, Vault, VaultUser}};
+use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::Vault};
 
 #[derive(Accounts)]
 pub struct DepositByAI<'info> {
@@ -41,25 +41,22 @@ pub struct DepositByAI<'info> {
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
 }
-
-pub(crate) fn handler(ctx: Context<DepositByAI>,  collateral_amount: u64) -> Result<()> {
-   let collateral = &ctx.accounts.collateral;
-   let ai = &ctx.accounts.agent;
-    // transfer
-    transfer_helper(ctx.accounts.ai_collateral.to_account_info(),
-     ctx.accounts.vault_collateral.to_account_info(),
-     collateral,
-     ai.to_account_info(),
-     ctx.accounts.token_program.to_account_info(),
-     ctx.accounts.token_2022_program.to_account_info(),
-     collateral_amount,
-     None
-    )?;
-    
-    let vault = &mut ctx.accounts.vault;
-    vault.collateral_amount = collateral_amount.checked_add(vault.collateral_amount).ok_or(VaultError::InvalidCollateralAmount)?;
-
-
-    
+impl<'info>  DepositByAI<'info> {
+    pub fn handler(&mut self, collateral_amount: u64) -> Result<()> {
+        let collateral = &mut self.collateral;
+        let ai = &mut self.agent;
+        transfer_helper(self.ai_collateral.to_account_info(),
+        self.vault_collateral.to_account_info(),
+        collateral,
+        ai.to_account_info(),
+        self.token_program.to_account_info(),
+        self.token_2022_program.to_account_info(),
+        collateral_amount,
+        None
+        )?;
+        let vault = &mut self.vault;
+        vault.collateral_amount = collateral_amount.checked_add(vault.collateral_amount).ok_or(VaultError::InvalidCollateralAmount)?;
     Ok(())
+    }
 }
+
