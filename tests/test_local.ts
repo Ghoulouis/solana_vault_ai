@@ -31,6 +31,10 @@ const REDEEMABLE_MINT_SEED = "REDEEMABLE";
             );
         });
 
+        it("flow test", async function () {
+            await flow({ owner, agent, user });
+        });
+
         // it("open vault test", async function () {
         //     await openVaultTest({ owner, agent });
         // });
@@ -38,10 +42,6 @@ const REDEEMABLE_MINT_SEED = "REDEEMABLE";
         // it("deposit test", async function () {
         //     await depositTest({ owner, agent, user });
         // });
-
-        it("flow test", async function () {
-            await flow({ owner, agent, user });
-        });
 
         this.afterAll("Transfer funds back to bank", async function () {});
     });

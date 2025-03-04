@@ -48,12 +48,13 @@ export const flow = async function ({
                 6
             );
 
-            //userCollateralATA = await getAssociatedTokenAddress(collateral, user.publicKey);
             userCollateralATA = (
                 await getOrCreateAssociatedTokenAccount(provider.connection, user.payer, collateral, user.publicKey)
             ).address;
 
-            agentCollateralATA = await getAssociatedTokenAddress(collateral, agent.publicKey);
+            agentCollateralATA = (
+                await getOrCreateAssociatedTokenAccount(provider.connection, agent.payer, collateral, agent.publicKey)
+            ).address;
             console.log(" Before mint");
             await mintTo(
                 provider.connection,
@@ -63,8 +64,6 @@ export const flow = async function ({
                 owner.payer.publicKey,
                 1e6 * 10 ** collateralDecimals
             );
-
-            //console.log("After mint");
 
             [vault] = PublicKey.findProgramAddressSync(
                 [Buffer.from("vault"), agent.publicKey.toBuffer()],
@@ -111,7 +110,7 @@ export const flow = async function ({
             let balanceLPLock = await getBalanceLPLockUser(user.publicKey, vault);
             expect(balanceLPLock).to.eq(BigInt(amountLpLock));
         });
-        return;
+
         it("user can deposit to vault", async function () {
             let amount = 5e5 * 10 ** collateralDecimals;
             let amountLp = 5e5 * 10 ** collateralDecimals;
@@ -154,20 +153,6 @@ export const flow = async function ({
 
         it("user can lock LP", async function () {
             let amountLpLock = 1e4 * 10 ** collateralDecimals;
-            // let tx = await program.methods
-            //     .requestWithdraw(agent.publicKey, new anchor.BN(amountLpLock))
-            //     .accounts({
-            //         user: user.publicKey,
-            //         vault: vault,
-            //         collateral: collateral,
-            //         vaultUser: vaultUserPda,
-            //         userCollateral: userCollateralATA,
-            //         vaultCollateral: vaultCollateralATA.address,
-            //         token2022Program: TOKEN_2022_PROGRAM_ID,
-            //     })
-            //     .instruction();
-
-            // console.log(tx);
             await program.methods
                 .requestWithdraw(agent.publicKey, new anchor.BN(amountLpLock))
                 .accounts({
@@ -212,7 +197,9 @@ export const flow = async function ({
             const amountLp = 1e5 * 10 ** collateralDecimals;
             const nonce = 1;
             const tx = new anchor.web3.Transaction();
-            let totalLPBefore = await getTotalLP(vault);
+
+            let balanceSOlAgentBefore = await provider.connection.getBalance(agent.publicKey);
+
             const depositIx = await program.methods
                 .deposit(new anchor.BN(amount), new anchor.BN(amountLp), new anchor.BN(nonce))
                 .accounts({
@@ -248,6 +235,9 @@ export const flow = async function ({
             //expect(balanceLP).to.eq(BigInt(1e6 - amountLp));
             let totalLPAfter = await getTotalLP(vault);
             //expect(totalLPAfter - totalLPBefore).to.eq(BigInt(amountLp));
+
+            let balanceSOlAgentAfter = await provider.connection.getBalance(agent.publicKey);
+            expect(balanceSOlAgentBefore - balanceSOlAgentAfter).to.eq(0);
         });
 
         it(" can get total value of vault", async function () {

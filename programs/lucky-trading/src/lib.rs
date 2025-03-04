@@ -1,19 +1,23 @@
 #![allow(unexpected_cfgs)]
-
 use anchor_lang::prelude::*;
 
-use crate::instructions::*;
+mod constants;
+mod error;
 
-pub mod constants;
-pub mod error;
 pub mod helper;
+pub use helper::*;
+pub mod events;
+pub use events::*;
 pub mod instructions;
+pub use instruction::*;
 pub mod state;
+pub use state::*;
 
 declare_id!("ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX");
 
 #[program]
 pub mod lucky_trading {
+
     use super::*;
 
     // admin functions
