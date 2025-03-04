@@ -65,6 +65,7 @@ impl <'info> WithdrawForUser<'info> {
     collateral_amount,
      Some(&[&[VAULT_SEED, self.agent.key().as_ref(), &[vault.bump] ]]),
     )?;
+
     Ok(())
 }
 

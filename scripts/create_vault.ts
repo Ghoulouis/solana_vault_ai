@@ -2,6 +2,7 @@ import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor"; // Import đầy đủ anchor
 import { Program } from "@coral-xyz/anchor";
 import { LuckyTrading } from "../target/types/lucky_trading";
+import { createAssociatedTokenAccount, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
 
 const VAULT_SEED = "vault";
 
@@ -26,21 +27,30 @@ async function main() {
         console.log("Vault is already deployed at", vaultPda.toBase58());
     } catch {}
     console.log("isDeployed = ", false);
-    if (isDeployed) return;
+    //if (isDeployed) return;
 
-    const txHash = await program.methods
-        .openVault(agent)
-        .accountsPartial({
-            authority: wallet.publicKey,
-            collateral: collateral,
-            vault: vaultPda,
-        })
-        .signers([wallet.payer])
-        .rpc();
+    const vaultCollatetalATA = await getOrCreateAssociatedTokenAccount(
+        provider.connection,
+        wallet.payer,
+        collateral,
+        vaultPda,
+        true
+    );
+    console.log("Vault collateral ATA:", vaultCollatetalATA.address.toBase58());
 
-    console.log("Transaction hash:", txHash);
+    // const txHash = await program.methods
+    //     .openVault(agent)
+    //     .accountsPartial({
+    //         authority: wallet.publicKey,
+    //         collateral: collateral,
+    //         vault: vaultPda,
+    //     })
+    //     .signers([wallet.payer])
+    //     .rpc();
 
-    console.log(`View transaction on Solana Explorer: https://solscan.io/tx/${txHash}?cluster=devnet`);
+    // console.log("Transaction hash:", txHash);
+
+    // console.log(`View transaction on Solana Explorer: https://solscan.io/tx/${txHash}?cluster=devnet`);
 }
 
 main().catch((err) => {

@@ -25,4 +25,16 @@ pub enum VaultError {
 
     #[msg("Vault is not empty")]
     VaultNotEmpty,
+
+    #[msg("Wrong owner in user collateral ATA")]
+    InvalidOwnerUserCollateralATA,
+
+    #[msg("Wrong collateral in user collateral ATA")]
+    InvalidCollateralUserCollateralATA,
+
+    #[msg("Wrong collateral")]
+    InvalidCollateral,
+
+    #[msg("Overflow")]
+    Overflow,
 }
