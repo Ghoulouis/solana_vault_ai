@@ -7,10 +7,10 @@ use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfe
 pub struct Deposit<'info> {
 
     #[account(mut)]
-    pub agent: Signer<'info>,
+    pub user: Signer<'info>,
 
     #[account(mut)]
-    pub user: Signer<'info>,
+    pub agent: Signer<'info>,
 
     #[account(
         mut, 
@@ -29,13 +29,13 @@ pub struct Deposit<'info> {
     pub vault_user: Box<Account<'info, VaultUser>>,
     #[account(
         mut,
-        constraint = vault.collateral == collateral.key() @VaultError::InvalidError,
+        constraint = vault.collateral == collateral.key() @VaultError::InvalidCollateral,
     )]
     pub collateral: Box<Account<'info, Mint>>,
     #[account(
         mut,
-        constraint = user_collateral.mint == collateral.key() @VaultError::InvalidError,
-        constraint = user_collateral.owner == user.key() @VaultError::InvalidError,
+        constraint = user_collateral.mint == collateral.key() @VaultError::InvalidCollateralUserCollateralATA,
+        constraint = user_collateral.owner == user.key() @VaultError::InvalidOwnerUserCollateralATA,
     )]
     pub user_collateral: Box<Account<'info, TokenAccount>>,
     #[account(

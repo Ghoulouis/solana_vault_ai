@@ -19,3 +19,5 @@ target/deploy/*.so
 node_modules
 test-ledger
 .yarn
+
+.env

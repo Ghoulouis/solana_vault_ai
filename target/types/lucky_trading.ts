@@ -21,7 +21,17 @@ export type LuckyTrading = {
           "isSigner": false
         },
         {
+          "name": "vaultCollateral",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
         },
@@ -259,12 +269,12 @@ export type LuckyTrading = {
       "name": "deposit",
       "accounts": [
         {
-          "name": "agent",
+          "name": "user",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "user",
+          "name": "agent",
           "isMut": true,
           "isSigner": true
         },
@@ -493,6 +503,26 @@ export type LuckyTrading = {
       "code": 6007,
       "name": "VaultNotEmpty",
       "msg": "Vault is not empty"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidOwnerUserCollateralATA",
+      "msg": "Wrong owner in user collateral ATA"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidCollateralUserCollateralATA",
+      "msg": "Wrong collateral in user collateral ATA"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidCollateral",
+      "msg": "Wrong collateral"
+    },
+    {
+      "code": 6011,
+      "name": "Overflow",
+      "msg": "Overflow"
     }
   ]
 };
@@ -520,7 +550,17 @@ export const IDL: LuckyTrading = {
           "isSigner": false
         },
         {
+          "name": "vaultCollateral",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
         },
@@ -758,12 +798,12 @@ export const IDL: LuckyTrading = {
       "name": "deposit",
       "accounts": [
         {
-          "name": "agent",
+          "name": "user",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "user",
+          "name": "agent",
           "isMut": true,
           "isSigner": true
         },
@@ -992,6 +1032,26 @@ export const IDL: LuckyTrading = {
       "code": 6007,
       "name": "VaultNotEmpty",
       "msg": "Vault is not empty"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidOwnerUserCollateralATA",
+      "msg": "Wrong owner in user collateral ATA"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidCollateralUserCollateralATA",
+      "msg": "Wrong collateral in user collateral ATA"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidCollateral",
+      "msg": "Wrong collateral"
+    },
+    {
+      "code": 6011,
+      "name": "Overflow",
+      "msg": "Overflow"
     }
   ]
 };

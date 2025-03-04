@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{Mint, Token};
+use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}};
 
 use crate::{constants::constants::VAULT_SEED, state::Vault};
 
@@ -20,7 +20,17 @@ pub struct OpenVault<'info> {
     pub vault: Account<'info, Vault>,
     #[account(mut)]
     pub collateral: Account<'info, Mint>,
+
+    #[account(
+        init,
+        payer = authority,
+        associated_token::authority = vault,
+        associated_token::mint = collateral,
+    )]
+    pub vault_collateral: Box<Account<'info, TokenAccount>>,
+
     pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
 }
 

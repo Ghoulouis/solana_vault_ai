@@ -29,19 +29,20 @@ pub struct RequestWithdraw<'info> {
     pub vault_user: Box<Account<'info, VaultUser>>,
     #[account(
         mut,
-        constraint = vault.collateral == collateral.key() @VaultError::InvalidError,
+        constraint = vault.collateral == collateral.key() @VaultError::InvalidCollateral,
     )]
     pub collateral: Box<Account<'info, Mint>>,
     #[account(
-        mut,
-        constraint = user_collateral.mint == collateral.key() @VaultError::InvalidError,
-        constraint = user_collateral.owner == user.key() @VaultError::InvalidError,
+        init_if_needed,
+        payer = user,
+        associated_token::authority = user,
+        associated_token::mint = collateral,
     )]
     pub user_collateral: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
-        constraint = vault_collateral.mint == collateral.key() @VaultError::InvalidError,
-        constraint = vault_collateral.owner == vault.key() @VaultError::InvalidError,
+        constraint = vault_collateral.mint == collateral.key() @VaultError::InvalidOwnerUserCollateralATA,
+        constraint = vault_collateral.owner == vault.key() @VaultError::InvalidCollateralUserCollateralATA,
     )]
     pub vault_collateral: Box<Account<'info, TokenAccount>>,
     pub token_program: Program<'info, Token>,
@@ -52,7 +53,7 @@ pub struct RequestWithdraw<'info> {
 impl  <'info> RequestWithdraw<'info> {
     pub fn handler(&mut self, _agent: Pubkey, lp_amount: u64) -> Result<()> {
         let vault_user = &mut self.vault_user;
-        vault_user.lp = vault_user.lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
+        vault_user.lp = vault_user.lp.checked_sub(lp_amount).ok_or(VaultError::Overflow)?;
         vault_user.lp_lock += lp_amount;
         Ok(())
     }

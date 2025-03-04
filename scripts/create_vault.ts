@@ -2,6 +2,11 @@ import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor"; // Import đầy đủ anchor
 import { Program } from "@coral-xyz/anchor";
 import { LuckyTrading } from "../target/types/lucky_trading";
+import {
+    createAssociatedTokenAccount,
+    getAssociatedTokenAddressSync,
+    getOrCreateAssociatedTokenAccount,
+} from "@solana/spl-token";
 
 const VAULT_SEED = "vault";
 
@@ -12,7 +17,7 @@ async function main() {
     const program = anchor.workspace.LuckyTrading as Program<LuckyTrading>;
     const wallet = anchor.Wallet.local();
 
-    const agent = new PublicKey("Gg9UvaXUTwJvPXZN3rmjmBeGiU4FwQQf7q43aWH2uDMX");
+    const agent = new PublicKey("4xDfHSD5ac6sSSgNEUjU35tGnWuQCuzc9iUNNE4aNe1u");
     const collateral = new PublicKey("Bv773jeAs3nsU9NnUM8pYWAXsggqp2NCtpuMzSS3E1fg"); // USDC devnet
     const vaultPda = PublicKey.findProgramAddressSync(
         [Buffer.from(VAULT_SEED), agent.toBuffer()],
@@ -28,12 +33,15 @@ async function main() {
     console.log("isDeployed = ", false);
     if (isDeployed) return;
 
+    const vaultCollatetalATA = getAssociatedTokenAddressSync(collateral, vaultPda, true);
+
     const txHash = await program.methods
         .openVault(agent)
-        .accountsPartial({
+        .accounts({
             authority: wallet.publicKey,
             collateral: collateral,
             vault: vaultPda,
+            vaultCollateral: vaultCollatetalATA,
         })
         .signers([wallet.payer])
         .rpc();
