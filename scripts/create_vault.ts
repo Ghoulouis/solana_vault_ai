@@ -17,7 +17,7 @@ async function main() {
     const program = anchor.workspace.LuckyTrading as Program<LuckyTrading>;
     const wallet = anchor.Wallet.local();
 
-    const agent = new PublicKey("4xDfHSD5ac6sSSgNEUjU35tGnWuQCuzc9iUNNE4aNe1u");
+    const agent = new PublicKey("3J92K9YRRcFcSsAWAATGVRFWKW7XKoG7u5HpnzoYDnW3");
     const collateral = new PublicKey("Bv773jeAs3nsU9NnUM8pYWAXsggqp2NCtpuMzSS3E1fg"); // USDC devnet
     const vaultPda = PublicKey.findProgramAddressSync(
         [Buffer.from(VAULT_SEED), agent.toBuffer()],
