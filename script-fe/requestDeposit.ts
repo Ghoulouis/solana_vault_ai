@@ -24,7 +24,7 @@ async function main() {
     });
 
     const program = new Program(idl as LuckyTrading, "ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX", provider);
-    const agent = new PublicKey("Gg9UvaXUTwJvPXZN3rmjmBeGiU4FwQQf7q43aWH2uDMX");
+    const agent = new PublicKey("4xDfHSD5ac6sSSgNEUjU35tGnWuQCuzc9iUNNE4aNe1u");
     const vaultPda = PublicKey.findProgramAddressSync(
         [Buffer.from(VAULT_SEED), agent.toBuffer()],
         program.programId
@@ -50,7 +50,7 @@ async function main() {
     console.log("vaultCollateralATA", vaultCollateralATA.toBase58());
     try {
         let txBase64 =
-            "Ak7lHNhDc0uAhwk03jJ2PZnG6KV9cqOlIu6qw8dXM3mjg/X1i79ErTQtPDy8X8z/M499BSUr+zE1Q7C2uK6lJQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAGDejmi6KF4Sj4yLRw9swn5HrH6XgTRiCnWlACVrswBKlGr2iCVGKNT/VIWsqMxxyJOuZ0NatqL9yGMgarSL6nQ/xcx2TYOEJonyHpD2hyepc6gaiYUNjmlPj0f1iAToaXIGNuma3IRTiwTfwK9w5ush4wk2YGRLCK4P5xIaGmKzTAaESlP0ohvV2mZ7JyQxBy7ecJudh1Sv0jGpL4bV6hoTiSNU2HFPtjesoak1gUKgRT6Sa74TaWVXuhO4P1D8tvTqIvjeOkwtcItwep78NIsO5ibOhNUQc7JZhX51bSewZLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBkZv5SEXMv/srbpyw5vnvIzlu8X3EmssQ5s6QAAAAAbd9uHXZaGT2cvhRs7reawctIXtX1s3kTqM9YV+/wCpBt324e51j94YQl285GzN2rYa/E2DuQ0n/r35KNihi/yMlVisBbnv/QrRh8PKt2VypxYTdnx/pByVbfJmXtu+voyXJY9OJInxuz0QKRSODYMLWhOZ2v8QhASOe9jb6fhZfOBIJu8ixNlDvJY0u8OpbCpDnv+npA4bAqhppEpbTOMDCAAFAiChBwAIAAkDQA0DAAAAAAALCwABBAIGAwUJCgwHIPIjxolS4fK2AAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAA";
+            "Ahj13uTXsoK1ITSG4Xyl8entf/xQmILapp8l9UuauyllpSCAXV4gxx8NmJiNr1ncHMWhgLp439ox6GLLgZ+7vA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAGDTq4Ue7gvnO0WYFz+7ZvAj9BNzKxwZ2jATTFsZJcnDBgr2iCVGKNT/VIWsqMxxyJOuZ0NatqL9yGMgarSL6nQ/wMbZGGtY+XSISRNK5IppKhQhlW7KRck06QvN3WGtivkUS4+mI7I/B2qBJIFdTO/V2WJgXCU18amHxHrMuYKjWoY26ZrchFOLBN/Ar3Dm6yHjCTZgZEsIrg/nEhoaYrNMCiL43jpMLXCLcHqe/DSLDuYmzoTVEHOyWYV+dW0nsGS+blnll2lPY0xFe1J9XCDQ7HtJUGBPKe0uf+GGkveV59AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBkZv5SEXMv/srbpyw5vnvIzlu8X3EmssQ5s6QAAAAAbd9uHXZaGT2cvhRs7reawctIXtX1s3kTqM9YV+/wCpBt324e51j94YQl285GzN2rYa/E2DuQ0n/r35KNihi/yMlVisBbnv/QrRh8PKt2VypxYTdnx/pByVbfJmXtu+voyXJY9OJInxuz0QKRSODYMLWhOZ2v8QhASOe9jb6fhZuut+fvw6KOyNAcxVLLVycN8glPkkRaZPFMf2ur7neeoDCAAFAiChBwAIAAkDQA0DAAAAAAALCwEAAgMFBAYJCgwHIPIjxolS4fK2AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA";
 
         const parsedTx = anchor.web3.Transaction.from(Buffer.from(txBase64, "base64"));
         const transaction = VersionedTransaction.deserialize(Buffer.from(txBase64, "base64"));

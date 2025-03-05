@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}, token_2022::Token2022};
 
-use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::Vault};
+use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::Vault, AgentDepositEvent};
 
 #[derive(Accounts)]
 pub struct DepositByAI<'info> {
@@ -45,6 +45,8 @@ impl<'info>  DepositByAI<'info> {
     pub fn handler(&mut self, collateral_amount: u64) -> Result<()> {
         let collateral = &mut self.collateral;
         let ai = &mut self.agent;
+
+      
         transfer_helper(self.ai_collateral.to_account_info(),
         self.vault_collateral.to_account_info(),
         collateral,
@@ -55,8 +57,14 @@ impl<'info>  DepositByAI<'info> {
         None
         )?;
         let vault = &mut self.vault;
-        vault.collateral_amount = collateral_amount.checked_add(vault.collateral_amount).ok_or(VaultError::InvalidCollateralAmount)?;
-    Ok(())
+        vault.collateral_amount = collateral_amount.checked_add(vault.collateral_amount).ok_or(VaultError::Overflow)?;
+
+
+
+        emit!(AgentDepositEvent {
+                collateral_amount,
+            });
+         Ok(())
     }
 }
 

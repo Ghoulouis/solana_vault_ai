@@ -1,25 +1,28 @@
 #![allow(unexpected_cfgs)]
-
 use anchor_lang::prelude::*;
 
-use crate::instructions::*;
-
-pub mod constants;
-pub mod error;
+mod constants;
+mod error;
 pub mod helper;
+pub use helper::*;
+pub mod events;
+pub use events::*;
 pub mod instructions;
+pub use instructions::*;
 pub mod state;
+pub use state::*;
 
 declare_id!("ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX");
 
 #[program]
 pub mod lucky_trading {
+
     use super::*;
 
     // admin functions
 
-    pub fn open_vault(ctx: Context<OpenVault>, agent: Pubkey) -> Result<()> {
-        ctx.accounts.handler(agent, ctx.bumps.vault)
+    pub fn open_vault(ctx: Context<OpenVault>) -> Result<()> {
+        ctx.accounts.handler(ctx.bumps.vault)
     }
 
     pub fn close_vault(ctx: Context<CloseVault>, agent: Pubkey) -> Result<()> {

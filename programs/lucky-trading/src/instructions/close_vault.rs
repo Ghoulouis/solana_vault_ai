@@ -22,15 +22,14 @@ pub struct CloseVault<'info> {
     pub vault: Account<'info, Vault>,
     #[account(mut)]
     pub collateral: Account<'info, Mint>,
+
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
 impl<'info> CloseVault<'info> {
     pub fn handler(&mut self, _agent: Pubkey) -> Result<()> {
         let vault = &mut self.vault;
-
         require!(vault.total_lp == 0, VaultError::VaultNotEmpty);
-
         Ok(())
     }
 }

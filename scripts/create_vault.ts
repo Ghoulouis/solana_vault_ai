@@ -17,14 +17,16 @@ async function main() {
     const program = anchor.workspace.LuckyTrading as Program<LuckyTrading>;
     const wallet = anchor.Wallet.local();
 
-    const agent = new PublicKey("3J92K9YRRcFcSsAWAATGVRFWKW7XKoG7u5HpnzoYDnW3");
+    const agent = new PublicKey("GS3QKbnoBG6B3gBBQWUvwUe24uEQ5kioTbDoEZ6V25SS"); // Agent
     const collateral = new PublicKey("Bv773jeAs3nsU9NnUM8pYWAXsggqp2NCtpuMzSS3E1fg"); // USDC devnet
+
     const vaultPda = PublicKey.findProgramAddressSync(
         [Buffer.from(VAULT_SEED), agent.toBuffer()],
         program.programId
     )[0];
 
     let isDeployed = false;
+
     try {
         let data = await program.account.vault.fetch(vaultPda);
         isDeployed = true;

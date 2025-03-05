@@ -11,6 +11,11 @@ export type LuckyTrading = {
           "isSigner": true
         },
         {
+          "name": "agent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "vault",
           "isMut": true,
           "isSigner": false
@@ -26,7 +31,17 @@ export type LuckyTrading = {
           "isSigner": false
         },
         {
+          "name": "agentCollateral",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
@@ -41,12 +56,7 @@ export type LuckyTrading = {
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "agent",
-          "type": "publicKey"
-        }
-      ]
+      "args": []
     },
     {
       "name": "closeVault",
@@ -461,6 +471,98 @@ export type LuckyTrading = {
           }
         ]
       }
+    }
+  ],
+  "events": [
+    {
+      "name": "AgentDepositEvent",
+      "fields": [
+        {
+          "name": "collateralAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "AgentWithdrawEvent",
+      "fields": [
+        {
+          "name": "collateralAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DepositEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "collateralAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lpAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "OpenVaultEvent",
+      "fields": [
+        {
+          "name": "agent",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "vault",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "lpAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "collateralAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawRequestEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "lpAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
     }
   ],
   "errors": [
@@ -540,6 +642,11 @@ export const IDL: LuckyTrading = {
           "isSigner": true
         },
         {
+          "name": "agent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "vault",
           "isMut": true,
           "isSigner": false
@@ -555,7 +662,17 @@ export const IDL: LuckyTrading = {
           "isSigner": false
         },
         {
+          "name": "agentCollateral",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
@@ -570,12 +687,7 @@ export const IDL: LuckyTrading = {
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "agent",
-          "type": "publicKey"
-        }
-      ]
+      "args": []
     },
     {
       "name": "closeVault",
@@ -990,6 +1102,98 @@ export const IDL: LuckyTrading = {
           }
         ]
       }
+    }
+  ],
+  "events": [
+    {
+      "name": "AgentDepositEvent",
+      "fields": [
+        {
+          "name": "collateralAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "AgentWithdrawEvent",
+      "fields": [
+        {
+          "name": "collateralAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DepositEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "collateralAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "lpAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "OpenVaultEvent",
+      "fields": [
+        {
+          "name": "agent",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "vault",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "lpAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "collateralAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawRequestEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "lpAmount",
+          "type": "u64",
+          "index": false
+        }
+      ]
     }
   ],
   "errors": [
