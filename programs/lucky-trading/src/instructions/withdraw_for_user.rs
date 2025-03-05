@@ -56,6 +56,8 @@ impl <'info> WithdrawForUser<'info> {
     vault_user.lp_lock  = vault_user.lp_lock.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
     vault.total_lp = vault.total_lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
     
+
+    vault.collateral_amount = vault.collateral_amount.checked_sub(collateral_amount).ok_or(VaultError::InvalidError)?;
     transfer_helper(self.vault_collateral.to_account_info(),
     self.user_collateral.to_account_info(),
     collateral,

@@ -11,6 +11,11 @@ export type LuckyTrading = {
           "isSigner": true
         },
         {
+          "name": "agent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "vault",
           "isMut": true,
           "isSigner": false
@@ -26,7 +31,17 @@ export type LuckyTrading = {
           "isSigner": false
         },
         {
+          "name": "agentCollateral",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
@@ -41,12 +56,7 @@ export type LuckyTrading = {
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "agent",
-          "type": "publicKey"
-        }
-      ]
+      "args": []
     },
     {
       "name": "closeVault",
@@ -468,11 +478,6 @@ export type LuckyTrading = {
       "name": "AgentDepositEvent",
       "fields": [
         {
-          "name": "user",
-          "type": "publicKey",
-          "index": false
-        },
-        {
           "name": "collateralAmount",
           "type": "u64",
           "index": false
@@ -482,11 +487,6 @@ export type LuckyTrading = {
     {
       "name": "AgentWithdrawEvent",
       "fields": [
-        {
-          "name": "user",
-          "type": "publicKey",
-          "index": false
-        },
         {
           "name": "collateralAmount",
           "type": "u64",
@@ -642,6 +642,11 @@ export const IDL: LuckyTrading = {
           "isSigner": true
         },
         {
+          "name": "agent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "vault",
           "isMut": true,
           "isSigner": false
@@ -657,7 +662,17 @@ export const IDL: LuckyTrading = {
           "isSigner": false
         },
         {
+          "name": "agentCollateral",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "token2022Program",
           "isMut": false,
           "isSigner": false
         },
@@ -672,12 +687,7 @@ export const IDL: LuckyTrading = {
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "agent",
-          "type": "publicKey"
-        }
-      ]
+      "args": []
     },
     {
       "name": "closeVault",
@@ -1099,11 +1109,6 @@ export const IDL: LuckyTrading = {
       "name": "AgentDepositEvent",
       "fields": [
         {
-          "name": "user",
-          "type": "publicKey",
-          "index": false
-        },
-        {
           "name": "collateralAmount",
           "type": "u64",
           "index": false
@@ -1113,11 +1118,6 @@ export const IDL: LuckyTrading = {
     {
       "name": "AgentWithdrawEvent",
       "fields": [
-        {
-          "name": "user",
-          "type": "publicKey",
-          "index": false
-        },
         {
           "name": "collateralAmount",
           "type": "u64",

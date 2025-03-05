@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}, token_2022::Token2022};
 
-use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::{ Vault, VaultUser}};
+use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::{ Vault, VaultUser}, DepositEvent};
 
 #[derive(Accounts)]
 pub struct Deposit<'info> {
@@ -71,6 +71,12 @@ impl <'info> Deposit<'info> {
         vault.total_lp += lp_amount;
         vault.collateral_amount += collateral_amount;
         vault_user.lp += lp_amount;
+
+        emit!(DepositEvent {
+                user: user.key(),
+                collateral_amount,
+                lp_amount,
+            });
         Ok(())
     }
 

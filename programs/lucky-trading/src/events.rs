@@ -27,12 +27,10 @@ pub struct WithdrawEvent {
 
 #[event]
 pub struct AgentDepositEvent {
-    pub user: Pubkey,
     pub collateral_amount: u64,
 }
 
 #[event]
 pub struct AgentWithdrawEvent {
-    pub user: Pubkey,
     pub collateral_amount: u64,
 }

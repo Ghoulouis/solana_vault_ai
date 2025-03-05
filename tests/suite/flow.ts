@@ -35,7 +35,7 @@ export const flow = async function ({
     let vaultUserPda: PublicKey;
     let collateralDecimals = 6;
 
-    return describe("Deposit tests", function () {
+    return describe("Flow tests", function () {
         before("Initialize collateral", async function () {
             collateral = await createMint(
                 provider.connection,
@@ -55,7 +55,7 @@ export const flow = async function ({
             agentCollateralATA = (
                 await getOrCreateAssociatedTokenAccount(provider.connection, agent.payer, collateral, agent.publicKey)
             ).address;
-            console.log(" Before mint");
+
             await mintTo(
                 provider.connection,
                 owner.payer,
@@ -76,14 +76,17 @@ export const flow = async function ({
             );
 
             vaultCollateralATA = await getAssociatedTokenAddress(collateral, vault, true);
-
+            agentCollateralATA = await getAssociatedTokenAddress(collateral, agent.publicKey);
             await program.methods
-                .openVault(agent.publicKey)
+                .openVault()
                 .accounts({
                     authority: owner.publicKey,
+                    agent: agent.publicKey,
                     collateral: collateral,
                     vaultCollateral: vaultCollateralATA,
+                    agentCollateral: agentCollateralATA,
                     vault: vault,
+                    token2022Program: TOKEN_2022_PROGRAM_ID,
                 })
                 .signers([owner.payer])
                 .rpc();
@@ -220,7 +223,7 @@ export const flow = async function ({
             tx.partialSign(agent.payer);
             let serializedTx = tx.serialize({ requireAllSignatures: false });
             const txBase64 = serializedTx.toString("base64");
-            console.log(txBase64);
+            //console.log(txBase64);
             const txHex = serializedTx.toString("hex");
             const parsedTx = anchor.web3.Transaction.from(Buffer.from(txHex, "hex"));
             parsedTx.partialSign(user.payer);

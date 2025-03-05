@@ -1,5 +1,5 @@
 import * as anchor from "@coral-xyz/anchor";
-import { createMint } from "@solana/spl-token";
+import { createMint, getAssociatedTokenAddress, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 import { Program } from "@coral-xyz/anchor";
 
 import { PublicKey } from "@solana/web3.js";
@@ -10,6 +10,7 @@ export const openVaultTest = async function ({ owner, agent }: { owner: anchor.W
     const program = anchor.workspace.LuckyTrading as Program<LuckyTrading>;
     const provider = anchor.AnchorProvider.env();
     let collateral: PublicKey;
+    const new_agent = new anchor.Wallet(anchor.web3.Keypair.generate());
     return describe("open vault tests", function () {
         before("Initialize collateral", async function () {
             collateral = await createMint(
@@ -25,15 +26,22 @@ export const openVaultTest = async function ({ owner, agent }: { owner: anchor.W
         });
         it("can open vault", async function () {
             let [vaultPda] = PublicKey.findProgramAddressSync(
-                [Buffer.from("vault"), agent.publicKey.toBuffer()],
+                [Buffer.from("vault"), new_agent.publicKey.toBuffer()],
                 program.programId
             );
+
+            let vaultCollateralATA = await getAssociatedTokenAddress(collateral, vaultPda, true);
+            let agentCollateralATA = await getAssociatedTokenAddress(collateral, new_agent.publicKey);
             await program.methods
-                .openVault(agent.publicKey)
+                .openVault()
                 .accounts({
                     authority: owner.publicKey,
                     collateral: collateral,
+                    agent: new_agent.publicKey,
                     vault: vaultPda,
+                    vaultCollateral: vaultCollateralATA,
+                    agentCollateral: agentCollateralATA,
+                    token2022Program: TOKEN_2022_PROGRAM_ID,
                 })
                 .signers([owner.payer])
                 .rpc();
@@ -42,7 +50,7 @@ export const openVaultTest = async function ({ owner, agent }: { owner: anchor.W
             expect(vault.authority).to.eql(owner.publicKey);
 
             await program.methods
-                .closeVault(agent.publicKey)
+                .closeVault(new_agent.publicKey)
                 .accounts({
                     authority: owner.publicKey,
                     collateral: collateral,

@@ -3,13 +3,12 @@ use anchor_lang::prelude::*;
 
 mod constants;
 mod error;
-
 pub mod helper;
 pub use helper::*;
 pub mod events;
 pub use events::*;
 pub mod instructions;
-pub use instruction::*;
+pub use instructions::*;
 pub mod state;
 pub use state::*;
 
@@ -22,8 +21,8 @@ pub mod lucky_trading {
 
     // admin functions
 
-    pub fn open_vault(ctx: Context<OpenVault>, agent: Pubkey) -> Result<()> {
-        ctx.accounts.handler(agent, ctx.bumps.vault)
+    pub fn open_vault(ctx: Context<OpenVault>) -> Result<()> {
+        ctx.accounts.handler(ctx.bumps.vault)
     }
 
     pub fn close_vault(ctx: Context<CloseVault>, agent: Pubkey) -> Result<()> {
