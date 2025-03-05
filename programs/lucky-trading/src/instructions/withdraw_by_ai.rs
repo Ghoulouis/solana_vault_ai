@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}, token_2022::Token2022};
-use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::{ Vault}};
+use crate::{constants::constants::VAULT_SEED, error::VaultError, helper::transfer_helper, state::Vault, AgentWithdrawEvent};
 
 #[derive(Accounts)]
 pub struct WithdrawByAI<'info> {
@@ -56,6 +56,10 @@ impl  <'info> WithdrawByAI<'info> {
     vault.collateral_amount = vault.collateral_amount.checked_sub(collateral_amount).ok_or(VaultError::InvalidCollateralAmount)?;
 
     
+    emit!(AgentWithdrawEvent {
+        collateral_amount,
+    });
+
     Ok(())
 }
 

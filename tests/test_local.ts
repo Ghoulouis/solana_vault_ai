@@ -4,6 +4,7 @@ import { Keypair, LAMPORTS_PER_SOL, PublicKey, Signer } from "@solana/web3.js";
 import { openVaultTest } from "./suite/openVaultTest";
 import { depositTest } from "./suite/depositTest";
 import { flow } from "./suite/flow";
+import { requestWithdrawTest } from "./suite/requestWithdrawTest";
 
 anchor.setProvider(anchor.AnchorProvider.env());
 const provider = anchor.AnchorProvider.env();
@@ -31,16 +32,20 @@ const REDEEMABLE_MINT_SEED = "REDEEMABLE";
             );
         });
 
-        // it("open vault test", async function () {
-        //     await openVaultTest({ owner, agent });
-        // });
-
-        // it("deposit test", async function () {
-        //     await depositTest({ owner, agent, user });
-        // });
-
         it("flow test", async function () {
             await flow({ owner, agent, user });
+        });
+
+        it("open vault test", async function () {
+            await openVaultTest({ owner, agent });
+        });
+
+        it("deposit test", async function () {
+            await depositTest({ owner, agent, user });
+        });
+
+        it("request withdraw test", async function () {
+            await requestWithdrawTest({ owner, user });
         });
 
         this.afterAll("Transfer funds back to bank", async function () {});

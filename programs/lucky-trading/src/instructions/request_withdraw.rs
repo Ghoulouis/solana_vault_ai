@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}, token_2022::Token2022};
 
-use crate::{constants::constants::VAULT_SEED, error::VaultError, state::{ Vault, VaultUser}};
+use crate::{constants::constants::VAULT_SEED, error::VaultError, state::{ Vault, VaultUser}, WithdrawRequestEvent};
 
 #[derive(Accounts)]
 #[instruction(
@@ -55,6 +55,11 @@ impl  <'info> RequestWithdraw<'info> {
         let vault_user = &mut self.vault_user;
         vault_user.lp = vault_user.lp.checked_sub(lp_amount).ok_or(VaultError::Overflow)?;
         vault_user.lp_lock += lp_amount;
+
+        emit!(WithdrawRequestEvent {
+            user: self.user.key(),
+            lp_amount,
+        });
         Ok(())
     }
     
