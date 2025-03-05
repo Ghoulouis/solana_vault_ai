@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, solana_program::message};
 
 #[error_code]
 pub enum VaultError {
@@ -35,6 +35,12 @@ pub enum VaultError {
     #[msg("Wrong collateral")]
     InvalidCollateral,
 
+    #[msg("Wrong owner ATA")]
+    InvalidOwnerATA,
+
     #[msg("Overflow")]
     Overflow,
+
+    #[msg("Wrong nonce")]
+    InvalidNonce,
 }

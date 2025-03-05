@@ -40,8 +40,8 @@ pub struct Deposit<'info> {
     pub user_collateral: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
-        constraint = vault_collateral.mint == collateral.key() @VaultError::InvalidError,
-        constraint = vault_collateral.owner == vault.key() @VaultError::InvalidError,
+        constraint = vault_collateral.mint == collateral.key() @VaultError::InvalidCollateral,
+        constraint = vault_collateral.owner == vault.key() @VaultError::InvalidOwnerATA,
     )]
     pub vault_collateral: Box<Account<'info, TokenAccount>>,
     pub token_program: Program<'info, Token>,
@@ -57,7 +57,7 @@ impl <'info> Deposit<'info> {
         let vault =&mut self.vault; 
         let vault_user =&mut self.vault_user;
 
-        require!(vault.nonce == nonce, VaultError::InvalidError);
+        require!(vault.nonce == nonce, VaultError::InvalidNonce);
         vault.nonce += 1;
 
         transfer_helper(self.user_collateral.to_account_info(), self.vault_collateral.to_account_info(),
