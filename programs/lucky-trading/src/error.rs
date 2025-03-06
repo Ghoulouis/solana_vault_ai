@@ -1,4 +1,4 @@
-use anchor_lang::{prelude::*, solana_program::message};
+use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum VaultError {

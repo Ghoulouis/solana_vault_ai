@@ -645,8 +645,5 @@
       "name": "InvalidLPLock",
       "msg": "Wrong LP lock"
     }
-  ],
-  "metadata": {
-    "address": "ATnAJWbLWJHc3qCb7ai4cSiWgaUFXqMhmZs7qQfSHxsX"
-  }
+  ]
 }

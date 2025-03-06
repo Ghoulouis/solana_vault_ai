@@ -50,6 +50,7 @@ impl<'info> OpenVault<'info> {
         vault.collateral = self.collateral.key();
         vault.collateral_amount = 0;
         vault.total_lp = 0;
+        vault.total_lp_lock = 0;
         vault.is_paused = false;
 
         emit!(OpenVaultEvent {

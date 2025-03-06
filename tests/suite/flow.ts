@@ -171,12 +171,15 @@ export const flow = async function ({
                 .rpc();
             console;
             let balanceLPLock = await getBalanceLPLockUser(user.publicKey, vault);
+
             expect(balanceLPLock).to.eq(BigInt(amountLpLock));
         });
 
         it("agent send reward for user ", async function () {
             let reward = 1e4 * 10 ** collateralDecimals;
             let amountLpLock = 1e4 * 10 ** collateralDecimals;
+            let dataVaultBefore = await program.account.vault.fetch(vault);
+            let totalLPLockBefore = dataVaultBefore.totalLpLock;
             await program.methods
                 .withdrawForUser(user.publicKey, new anchor.BN(amountLpLock), new anchor.BN(reward))
                 .accounts({
@@ -193,6 +196,10 @@ export const flow = async function ({
             console;
             let balanceLPLock = await getBalanceLPLockUser(user.publicKey, vault);
             expect(balanceLPLock).to.eq(BigInt(0));
+
+            let dataVaultAfter = await program.account.vault.fetch(vault);
+            let totalLPLockAfter = dataVaultAfter.totalLpLock;
+            expect(totalLPLockBefore.sub(totalLPLockAfter).toString()).to.eq(amountLpLock.toString());
         });
 
         it("can flow signer -> user to vault with LP", async function () {
@@ -269,6 +276,10 @@ export const flow = async function ({
         it("agent can withdraw from vault", async function () {
             let amount = new anchor.BN(1e5 * 10 ** collateralDecimals);
             let balanceBefore = await getAccount(provider.connection, agentCollateralATA);
+
+            let dataBefore = await program.account.vault.fetch(vault);
+            let totalCollateralBefore = dataBefore.collateralAmount;
+            let totalLPLockBefore = dataBefore.totalLpLock;
             await program.methods
                 .withdrawByAi(amount)
                 .accounts({
@@ -283,6 +294,13 @@ export const flow = async function ({
                 .rpc();
             let balanceAfter = await getAccount(provider.connection, agentCollateralATA);
             expect(balanceAfter.amount - balanceBefore.amount).to.eq(BigInt(1e5 * 10 ** collateralDecimals));
+
+            let dataAfter = await program.account.vault.fetch(vault);
+            let totalCollateralAfter = dataAfter.collateralAmount;
+            let totalLPLockAfter = dataAfter.totalLpLock;
+            expect(totalCollateralBefore.sub(totalCollateralAfter).toString()).to.eq(
+                BigInt(1e5 * 10 ** collateralDecimals).toString()
+            );
         });
 
         it("agent can deposit to vault", async function () {
