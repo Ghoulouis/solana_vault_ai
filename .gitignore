@@ -21,3 +21,5 @@ test-ledger
 .yarn
 
 .env
+
+deploy_key_mainnet.json

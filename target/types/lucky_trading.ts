@@ -450,6 +450,10 @@ export type LuckyTrading = {
             "type": "u64"
           },
           {
+            "name": "totalLpLock",
+            "type": "u64"
+          },
+          {
             "name": "isPaused",
             "type": "bool"
           }
@@ -623,8 +627,23 @@ export type LuckyTrading = {
     },
     {
       "code": 6011,
+      "name": "InvalidOwnerATA",
+      "msg": "Wrong owner ATA"
+    },
+    {
+      "code": 6012,
       "name": "Overflow",
       "msg": "Overflow"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidNonce",
+      "msg": "Wrong nonce"
+    },
+    {
+      "code": 6014,
+      "name": "InvalidLPLock",
+      "msg": "Wrong LP lock"
     }
   ]
 };
@@ -1081,6 +1100,10 @@ export const IDL: LuckyTrading = {
             "type": "u64"
           },
           {
+            "name": "totalLpLock",
+            "type": "u64"
+          },
+          {
             "name": "isPaused",
             "type": "bool"
           }
@@ -1254,8 +1277,23 @@ export const IDL: LuckyTrading = {
     },
     {
       "code": 6011,
+      "name": "InvalidOwnerATA",
+      "msg": "Wrong owner ATA"
+    },
+    {
+      "code": 6012,
       "name": "Overflow",
       "msg": "Overflow"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidNonce",
+      "msg": "Wrong nonce"
+    },
+    {
+      "code": 6014,
+      "name": "InvalidLPLock",
+      "msg": "Wrong LP lock"
     }
   ]
 };

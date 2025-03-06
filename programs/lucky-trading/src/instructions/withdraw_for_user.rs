@@ -52,12 +52,15 @@ impl <'info> WithdrawForUser<'info> {
     let collateral = &mut self.collateral;
 
 
-    require!(vault_user.lp_lock == lp_amount, VaultError::InvalidError);
-    vault_user.lp_lock  = vault_user.lp_lock.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
-    vault.total_lp = vault.total_lp.checked_sub(lp_amount).ok_or(VaultError::InvalidError)?;
-    
+    require!(vault_user.lp_lock == lp_amount, VaultError::InvalidLPLock);
+    // update vault_user
+    vault_user.lp_lock  = vault_user.lp_lock.checked_sub(lp_amount).ok_or(VaultError::Overflow)?;
+    // updatre vault 
+    vault.total_lp = vault.total_lp.checked_sub(lp_amount).ok_or(VaultError::Overflow)?;
+    vault.total_lp_lock = vault.total_lp_lock.checked_sub(lp_amount).ok_or(VaultError::Overflow)?;
+    vault.collateral_amount = vault.collateral_amount.checked_sub(collateral_amount).ok_or(VaultError::Overflow)?;
 
-    vault.collateral_amount = vault.collateral_amount.checked_sub(collateral_amount).ok_or(VaultError::InvalidError)?;
+    // transfer collateral to user
     transfer_helper(self.vault_collateral.to_account_info(),
     self.user_collateral.to_account_info(),
     collateral,

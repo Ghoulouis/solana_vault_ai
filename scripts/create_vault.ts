@@ -4,8 +4,10 @@ import { Program } from "@coral-xyz/anchor";
 import { LuckyTrading } from "../target/types/lucky_trading";
 import {
     createAssociatedTokenAccount,
+    getAssociatedTokenAddress,
     getAssociatedTokenAddressSync,
     getOrCreateAssociatedTokenAccount,
+    TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
 
 const VAULT_SEED = "vault";
@@ -17,8 +19,10 @@ async function main() {
     const program = anchor.workspace.LuckyTrading as Program<LuckyTrading>;
     const wallet = anchor.Wallet.local();
 
-    const agent = new PublicKey("GS3QKbnoBG6B3gBBQWUvwUe24uEQ5kioTbDoEZ6V25SS"); // Agent
+    const agent = new PublicKey("4qC6YgTVSrwPyCQebmoCKNyGoQaozysEKdxGbBpNWtt7"); // Agent
     const collateral = new PublicKey("Bv773jeAs3nsU9NnUM8pYWAXsggqp2NCtpuMzSS3E1fg"); // USDC devnet
+
+    let agentCollateralATA = await getAssociatedTokenAddress(collateral, agent);
 
     const vaultPda = PublicKey.findProgramAddressSync(
         [Buffer.from(VAULT_SEED), agent.toBuffer()],
@@ -38,12 +42,15 @@ async function main() {
     const vaultCollatetalATA = getAssociatedTokenAddressSync(collateral, vaultPda, true);
 
     const txHash = await program.methods
-        .openVault(agent)
+        .openVault()
         .accounts({
             authority: wallet.publicKey,
+            agent: agent,
             collateral: collateral,
             vault: vaultPda,
             vaultCollateral: vaultCollatetalATA,
+            agentCollateral: agentCollateralATA,
+            token2022Program: TOKEN_2022_PROGRAM_ID,
         })
         .signers([wallet.payer])
         .rpc();

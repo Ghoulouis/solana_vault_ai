@@ -450,6 +450,10 @@
             "type": "u64"
           },
           {
+            "name": "totalLpLock",
+            "type": "u64"
+          },
+          {
             "name": "isPaused",
             "type": "bool"
           }
@@ -623,8 +627,23 @@
     },
     {
       "code": 6011,
+      "name": "InvalidOwnerATA",
+      "msg": "Wrong owner ATA"
+    },
+    {
+      "code": 6012,
       "name": "Overflow",
       "msg": "Overflow"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidNonce",
+      "msg": "Wrong nonce"
+    },
+    {
+      "code": 6014,
+      "name": "InvalidLPLock",
+      "msg": "Wrong LP lock"
     }
   ],
   "metadata": {

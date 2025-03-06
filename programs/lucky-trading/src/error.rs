@@ -43,4 +43,7 @@ pub enum VaultError {
 
     #[msg("Wrong nonce")]
     InvalidNonce,
+
+    #[msg("Wrong LP lock")]
+    InvalidLPLock,
 }

@@ -53,8 +53,12 @@ pub struct RequestWithdraw<'info> {
 impl  <'info> RequestWithdraw<'info> {
     pub fn handler(&mut self, _agent: Pubkey, lp_amount: u64) -> Result<()> {
         let vault_user = &mut self.vault_user;
+        let vault = &mut self.vault;
+
         vault_user.lp = vault_user.lp.checked_sub(lp_amount).ok_or(VaultError::Overflow)?;
         vault_user.lp_lock += lp_amount;
+
+        vault.total_lp_lock += lp_amount;
 
         emit!(WithdrawRequestEvent {
             user: self.user.key(),
